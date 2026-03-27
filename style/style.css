@@ -1,0 +1,227 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Header */
+.main-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    z-index: 100;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
+    color: white;
+}
+
+.logo-text-small {
+    font-size: 1.5rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.lang-select {
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid #fff;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+}
+
+.lang-select option {
+    color: #333;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-login {
+    background: transparent;
+    color: white;
+}
+
+.btn-login:hover {
+    text-decoration: underline;
+}
+
+.btn-signin {
+    background: #d4af37; /* Gold/Tradishion color */
+    color: white;
+    border: none;
+}
+
+.btn-signin:hover {
+    background: #c5a028;
+}
+
+/* Hero Section */
+.hero-video-section {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.hero-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translateX(-50%) translateY(-50%);
+    z-index: -1;
+    object-fit: cover;
+}
+
+.hero-overlay {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    padding: 0 50px;
+    background: rgba(0, 0, 0, 0.4);
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.hero-content-left {
+    max-width: 600px;
+    color: white;
+}
+
+.logo-text {
+    font-size: 5rem;
+    margin-bottom: 10px;
+}
+
+.motto {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    font-style: italic;
+}
+
+/* Features Section */
+.features-section {
+    padding: 80px 50px;
+    background-color: #fff;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.feature-card {
+    text-align: center;
+    padding: 30px;
+    background: #fdfdfd;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.feature-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: #222;
+}
+
+.feature-card p {
+    color: #666;
+}
+
+/* Images Preview Section */
+.images-preview-section {
+    padding: 0 50px 80px;
+    background-color: #fff;
+}
+
+.image-row {
+    display: flex;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 250px;
+}
+
+.image-row img {
+    width: 33.333%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.image-row img:hover {
+    transform: scale(1.02);
+}
+
+/* Footer */
+.footer {
+    background: #1a1a1a;
+    color: #f1f1f1;
+    padding: 40px 50px 20px;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.footer-links {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.footer-links a:hover {
+    color: #d4af37;
+}
+
+.footer-content p {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #888;
+}
