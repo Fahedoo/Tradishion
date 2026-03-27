@@ -17,7 +17,7 @@ function set_autoload()
 		function my_autoloader($classname) 
 		{
 			// Les classes DOIVENT être dans le répertoire class et avoir comme extension .class.php
-			$filename = './class/' . $classname . '.class.php';
+			$filename = './class/view/' . $classname . '.class.php';
 			 if (file_exists($filename))
 				include_once($filename); // on ne charge le fichier que si le fichier existe
 				else
