@@ -1,0 +1,408 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #fdfaf5; /* Couleur crÃ¨me de la maquette */
+    color: #333;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+h1, .logo-text, .logo-text-small {
+    font-family: 'Libre Baskerville', serif;
+    color: #0A0A0A;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Header */
+.main-header {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    z-index: 100;
+    background: #1a1a1a;
+    color: white;
+}
+
+.landing-page .main-header {
+    position: absolute;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
+}
+
+.logo-text-small {
+    font-size: 1.5rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: white; /* Overrides default black for the header */
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.lang-select {
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid #fff;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+}
+
+.lang-select option {
+    color: #333;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-login {
+    background: transparent;
+    color: white;
+}
+
+.btn-login:hover {
+    text-decoration: underline;
+}
+
+.btn-signin {
+    background-color: #A64B35; /* Couleur terre cuite */
+    color: white;
+    border: none;
+}
+
+.btn-signin:hover {
+    background-color: #8b4513;
+}
+
+/* Hero Section */
+.hero-video-section {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.hero-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translateX(-50%) translateY(-50%);
+    z-index: -1;
+    object-fit: cover;
+}
+
+.hero-overlay {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    padding: 0 50px;
+    background: rgba(0, 0, 0, 0.4);
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.hero-content-left {
+    max-width: 600px;
+    color: white;
+}
+
+.hero-content-left h1 {
+    color: white;
+}
+
+.logo-text {
+    font-size: 5rem;
+    margin-bottom: 10px;
+}
+
+.motto {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    font-style: italic;
+}
+
+/* Features Section */
+.features-section {
+    padding: 80px 50px;
+    background-color: transparent; /* Keeps the cream background */
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.feature-card {
+    text-align: center;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Adapted shadow from login design */
+}
+
+.feature-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    font-family: 'Libre Baskerville', serif;
+    color: #0A0A0A;
+}
+
+.feature-card p {
+    color: #4A5565;
+    font-weight: 500;
+}
+
+/* Images Preview Section */
+.images-preview-section {
+    padding: 0 50px 80px;
+    background-color: transparent;
+}
+
+.image-row {
+    display: flex;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 250px;
+}
+
+.image-row img {
+    width: 33.333%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.image-row img:hover {
+    transform: scale(1.02);
+}
+
+/* Footer */
+.footer {
+    background: #1a1a1a;
+    color: #f1f1f1;
+    padding: 40px 50px 20px;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.footer-links {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.footer-links a:hover {
+    color: #A64B35;
+}
+
+.footer-content p {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+/* ---- LOGIN PAGE EXTRACTS ---- */
+/* Wrapping class assuming the login forms will have a designated centering container 
+   (Since body display:flex was removed to not break the landing page) */
+.login-page-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 50px 0;
+}
+
+.login-container {
+    width: 100%;    
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.login-page .login-container {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header h1 {
+    font-size: 36px;
+    margin-bottom: 8px;
+}
+
+.login-header p {
+    font-size: 0.9rem;
+    color: #4A5565;
+    font-weight: bold;
+}
+
+/* La carte blanche du formulaire */
+.login-card {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #364153;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background-color: #fafafa;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #a0522d; /* Couleur terre cuite au clic */
+}
+
+/* Le bouton principal */
+.btn-submit {
+    width: 100%;
+    padding: 14px;
+    background-color: #A64B35; /* Couleur terre cuite */
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    background-color: #8b4513;
+}
+
+.forgot-password {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #4A5565;
+    text-decoration: none;
+}
+
+.separator {
+    height: 1px;
+    background: #eee;
+    margin: 25px 0;
+}
+
+/* Section inscription */
+.register-link {
+    text-align: center;
+}
+
+.register-link p {
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+    color: #4A5565;
+    font-weight: bold;
+}
+
+.btn-outline {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 1px solid #000000;
+    color: #0A0A0A;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.btn-outline:hover {
+    background: #a0522d;
+    color: white;
+}
+
+.login-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.login-footer a {
+    color: #4A5565;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Style pour le message d'erreur PHP */
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-size: 0.85rem;
+    text-align: center;
+}
