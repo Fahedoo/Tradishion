@@ -5,6 +5,7 @@ class ViewLandingPage extends View {
     public function __construct() {
         // On peut personnaliser le titre de la page pour cette vue spécifiquement
         $this->pageTitle = "Tradishion - Legacy comes to life";
+        $this->bodyClass = "landing-page";
     }
 
     protected function getBodyContent() {

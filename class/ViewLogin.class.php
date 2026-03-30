@@ -5,6 +5,7 @@ class ViewLogin extends View {
 
     public function __construct($error_message = "") {
         $this->pageTitle = "Connexion - TradiShion";
+        $this->bodyClass = "login-page";
         $this->error_message = $error_message;
     }
 

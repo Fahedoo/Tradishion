@@ -10,6 +10,9 @@ body {
     background-color: #fdfaf5; /* Couleur crÃ¨me de la maquette */
     color: #333;
     line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 h1, .logo-text, .logo-text-small {
@@ -24,7 +27,7 @@ a {
 
 /* Header */
 .main-header {
-    position: absolute;
+    position: relative;
     top: 0;
     left: 0;
     width: 100%;
@@ -33,8 +36,13 @@ a {
     align-items: center;
     padding: 20px 50px;
     z-index: 100;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
+    background: #1a1a1a;
     color: white;
+}
+
+.landing-page .main-header {
+    position: absolute;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
 }
 
 .logo-text-small {
@@ -212,6 +220,7 @@ a {
     background: #1a1a1a;
     color: #f1f1f1;
     padding: 40px 50px 20px;
+    margin-top: auto;
 }
 
 .footer-content {
@@ -255,7 +264,13 @@ a {
 .login-container {
     width: 100%;    
     max-width: 400px;
+    margin: 40px auto;
     padding: 20px;
+}
+
+.login-page .login-container {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .login-header {
