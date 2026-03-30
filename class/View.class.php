@@ -2,7 +2,6 @@
 
 abstract class View {
     protected $pageTitle = 'Tradishion';
-    protected $bodyClass = '';
 
     // Méthode abstraite que les enfants devront définir pour ajouter leur contenu
     abstract protected function getBodyContent();
@@ -18,7 +17,7 @@ abstract class View {
             <title><?php echo $this->pageTitle; ?></title>
             <link rel="stylesheet" href="style/style.css">
         </head>
-        <body class="<?php echo $this->bodyClass; ?>">
+        <body>
             <!-- Header global -->
             <header class="main-header">
                 <div class="header-logo">
@@ -36,7 +35,7 @@ abstract class View {
                     </div>
                     <div class="header-auth">
                         <a href="?page=login" class="btn btn-login">Log In</a>
-                        <a href="?page=signin" class="btn btn-signin">Sign In</a>
+                        <a href="?page=signup" class="btn btn-signup">Sign Up</a>
                     </div>
                 </div>
             </header>
@@ -51,12 +50,12 @@ abstract class View {
             <footer class="footer">
                 <div class="footer-content">
                     <ul class="footer-links">
-                        <li><a href="#privacy">Privacy policy</a></li>
-                        <li><a href="#qa">Q&A</a></li>
-                        <li><a href="#about">About us</a></li>
-                        <li><a href="#legal">Legal mentions</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                        <li><a href="#gcu">GCU</a></li>
+                        <li><a href="?page=privacy">Privacy policy</a></li>
+                        <li><a href="?page=faq">Q&A</a></li>
+                        <li><a href="?page=about">About us</a></li>
+                        <li><a href="?page=legal">Legal information</a></li>
+                        <li><a href="?page=contact">Contact</a></li>
+                        <li><a href="?page=gcu">GCU</a></li>
                     </ul>
                     <p>&copy; <?php echo date('Y'); ?> Tradishion. All rights reserved.</p>
                 </div>
