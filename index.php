@@ -5,7 +5,9 @@ ini_set("display_errors", 1);
 define("CHARGE_AUTOLOAD",true);
 require_once("inc/poo.inc.php"); 
 
-switch($_GET["page"]) {
+$page = $_GET["page"] ?? "";
+
+switch($page) {
     case "login":
         $view = new ViewLogin();
         echo $view;
