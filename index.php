@@ -5,6 +5,15 @@ ini_set("display_errors", 1);
 define("CHARGE_AUTOLOAD",true);
 require_once("inc/poo.inc.php"); 
 
-$vue = new LandingPage();
-echo $vue;
+switch($_GET["page"]) {
+    case "login":
+        $view = new ViewLogin();
+        echo $view;
+        break;
+    default:
+        $view = new ViewLandingPage();
+        echo $view;
+        break;
+}
+
 ?>
