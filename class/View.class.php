@@ -16,13 +16,13 @@ abstract class View {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title><?php echo $this->pageTitle; ?></title>
             <link rel="stylesheet" href="style/style.css">
+            <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
         </head>
         <body>
             <!-- Header global -->
             <header class="main-header">
                 <div class="header-logo">
-                    <!-- Placeholder for the logo image if you have one -->
-                    <span class="logo-text-small">Tradishion</span>
+                    <img src="assets/images/logowhite.webp" alt="White_Logo">
                 </div>
                 <div class="header-controls">
                     <div class="header-languages">

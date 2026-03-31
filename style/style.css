@@ -45,6 +45,12 @@ a {
     background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
 }
 
+.header-logo img {
+    width: 160px;
+    height: 40px;
+    object-fit: contain;
+}
+
 .logo-text-small {
     font-size: 1.5rem;
     font-weight: bold;
