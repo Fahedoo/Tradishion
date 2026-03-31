@@ -17,13 +17,13 @@ abstract class View {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title><?php echo $this->pageTitle; ?></title>
             <link rel="stylesheet" href="style/style.css">
+            <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
         </head>
-        <body class="<?php echo $this->bodyClass; ?>">
+        <body class="<?php echo htmlspecialchars($this->bodyClass); ?>">
             <!-- Header global -->
             <header class="main-header">
                 <div class="header-logo">
-                    <!-- Placeholder for the logo image if you have one -->
-                    <span class="logo-text-small">Tradishion</span>
+                    <img src="assets/images/logowhite.webp" alt="White_Logo">
                 </div>
                 <div class="header-controls">
                     <div class="header-languages">
@@ -36,7 +36,7 @@ abstract class View {
                     </div>
                     <div class="header-auth">
                         <a href="?page=login" class="btn btn-login">Log In</a>
-                        <a href="?page=signin" class="btn btn-signin">Sign In</a>
+                        <a href="?page=signup" class="btn btn-signup">Sign Up</a>
                     </div>
                 </div>
             </header>
@@ -51,12 +51,12 @@ abstract class View {
             <footer class="footer">
                 <div class="footer-content">
                     <ul class="footer-links">
-                        <li><a href="#privacy">Privacy policy</a></li>
-                        <li><a href="#qa">Q&A</a></li>
-                        <li><a href="#about">About us</a></li>
-                        <li><a href="#legal">Legal mentions</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                        <li><a href="#gcu">GCU</a></li>
+                        <li><a href="?page=privacy">Privacy policy</a></li>
+                        <li><a href="?page=faq">Q&A</a></li>
+                        <li><a href="?page=about">About us</a></li>
+                        <li><a href="?page=legal">Legal information</a></li>
+                        <li><a href="?page=contact">Contact</a></li>
+                        <li><a href="?page=gcu">GCU</a></li>
                     </ul>
                     <p>&copy; <?php echo date('Y'); ?> Tradishion. All rights reserved.</p>
                 </div>
