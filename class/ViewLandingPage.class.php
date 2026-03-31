@@ -31,14 +31,17 @@ class ViewLandingPage extends View {
         <section class="features-section">
             <div class="container features-grid">
                 <div class="feature-card">
+                    <div class="feature-icon" aria-hidden="true">&#10024;</div>
                     <h3>Learn about traditional know-how</h3>
                     <p>Dive deep into the roots of unique craftsmanship and discover the methods passed down through generations.</p>
                 </div>
                 <div class="feature-card">
+                    <div class="feature-icon" aria-hidden="true">&#128214;</div>
                     <h3>Discover the legacies</h3>
                     <p>Explore an immersive gallery of cultural heritage, traditional garments, and historical textiles.</p>
                 </div>
                 <div class="feature-card">
+                    <div class="feature-icon" aria-hidden="true">&#127760;</div>
                     <h3>Link with people around the world</h3>
                     <p>Connect with a global community passionate about preserving and sharing their vibrant cultural identities.</p>
                 </div>

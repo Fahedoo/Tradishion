@@ -2,6 +2,7 @@
 
 abstract class View {
     protected $pageTitle = 'Tradishion';
+    protected $bodyClass = '';
 
     // Méthode abstraite que les enfants devront définir pour ajouter leur contenu
     abstract protected function getBodyContent();
@@ -18,7 +19,7 @@ abstract class View {
             <link rel="stylesheet" href="style/style.css">
             <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
         </head>
-        <body>
+        <body class="<?php echo htmlspecialchars($this->bodyClass); ?>">
             <!-- Header global -->
             <header class="main-header">
                 <div class="header-logo">
