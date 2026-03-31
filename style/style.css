@@ -45,6 +45,15 @@ a {
     background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
 }
 
+<<<<<<< HEAD
+=======
+.header-logo img {
+    width: 160px;
+    height: 40px;
+    object-fit: contain;
+}
+
+>>>>>>> 4ebf829a978694ca016c9b8d60ba9e45bb8fa771
 .logo-text-small {
     font-size: 1.5rem;
     font-weight: bold;
@@ -408,6 +417,7 @@ a {
     font-size: 0.85rem;
     text-align: center;
 }
+<<<<<<< HEAD
 
 /* ---- DASHBOARD PRIVATE AREA ---- */
 
@@ -634,3 +644,5 @@ a {
 .badge-public { background: #0d6efd; }
 
 .btn-create-event { width: 100%; background: #A64B35; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+=======
+>>>>>>> 4ebf829a978694ca016c9b8d60ba9e45bb8fa771
