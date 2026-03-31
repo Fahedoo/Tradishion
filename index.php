@@ -56,27 +56,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // ---------- ROUTING AND VIEWS DISPLAY ----------
 switch($page) {
     case "login":
-<<<<<<< HEAD
-=======
         // Instantiate the login view and pass any error message
->>>>>>> 4ebf829a978694ca016c9b8d60ba9e45bb8fa771
         $view = new ViewLogin($errorMessageLogin);
         echo $view;
         break;
 
     case "signup":
-<<<<<<< HEAD
-=======
         // Instantiate the signup view and pass any error message
->>>>>>> 4ebf829a978694ca016c9b8d60ba9e45bb8fa771
         $view = new ViewSignUp($errorMessageSignup);
         echo $view;
         break;
 
-<<<<<<< HEAD
-=======
     // --- KAINA'S LEGAL PAGES ---
->>>>>>> 4ebf829a978694ca016c9b8d60ba9e45bb8fa771
     case "legal":
         $view = new ViewLegal();
         echo $view;
@@ -92,45 +83,13 @@ switch($page) {
         echo $view;
         break;
 
-<<<<<<< HEAD
-    case "dashboard":
-=======
     // --- PRIVATE AREA ---
     case "dashboard":
         // SECURITY CHECK: Block access if the user is not logged in
->>>>>>> 4ebf829a978694ca016c9b8d60ba9e45bb8fa771
         if (!isset($_SESSION['id_user'])) {
             header("Location: index.php?page=login");
             exit();
         }
-<<<<<<< HEAD
-        $view = new ViewDashboard();
-        echo $view;
-        break;
-
-    // --- GESTION DE LA DÉCONNEXION ICI ---
-    case "logout":
-        session_destroy(); // On détruit la session
-        header("Location: index.php"); // On redirige vers l'accueil
-        exit();
-        break;
-
-    // --- ROUTE API POUR LA CARTE INTERACTIVE ET LE FEED ---
-    case "api_posts":
-        // On nettoie tout affichage précédent et on dit au navigateur qu'on envoie du JSON
-        ob_clean(); 
-        header('Content-Type: application/json');
-        
-        $db = new Database();
-        $country = isset($_GET['country']) ? $_GET['country'] : 'all';
-        
-        // On récupère les posts et on les transforme en JSON
-        echo json_encode($db->getFeedPosts($country));
-        exit(); // On arrête l'exécution ici pour ne pas charger les vues HTML
-        break;
-
-    default:
-=======
         // Temporary display for the dashboard
         echo "<div style='text-align:center; padding:50px;'>";
         echo "<h1>Espace Membre Tradishion</h1>";
@@ -141,7 +100,6 @@ switch($page) {
 
     default:
         // Default route: display the public landing page
->>>>>>> 4ebf829a978694ca016c9b8d60ba9e45bb8fa771
         $view = new ViewLandingPage();
         echo $view;
         break;
