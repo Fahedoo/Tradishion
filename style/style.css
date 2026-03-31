@@ -190,29 +190,31 @@ a {
 
 /* Images Preview Section */
 .images-preview-section {
-    padding: 0 50px 80px;
+    padding: 0;
     background-color: transparent;
 }
 
 .image-row {
     display: flex;
-    gap: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-    height: 250px;
+    gap: 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    height: 440px;
 }
 
 .image-row img {
+    flex: 1;
     width: 33.333%;
     height: 100%;
     object-fit: cover;
-    border-radius: 8px;
-    transition: transform 0.3s ease;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 0;
+    transition: none;
+    box-shadow: none;
 }
 
 .image-row img:hover {
-    transform: scale(1.02);
+    transform: none;
 }
 
 /* Footer */
