@@ -15,7 +15,7 @@ class ViewPrivacy extends View {
                 
                 <div class="legal-section">
                     <h2>1. Introduction and GDPR Compliance</h2>
-                    <p>Welcome to the privacy policy of the “Tradishion” platform. Because our private network handles personal information, it strictly complies with the General Data Protection Regulation (GDPR) and national and international regulations concerning databases. This document explains how Tradishion Corp collects, uses, and protects your personal data.</p>
+                    <p>Welcome to the privacy policy of the "Tradishion" platform. Because our private network handles personal information, it strictly complies with the General Data Protection Regulation (GDPR) and national and international regulations concerning databases. This document explains how Tradishion Corp collects, uses, and protects your personal data.</p>
                 </div>
 
                 <div class="legal-section">

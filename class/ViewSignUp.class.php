@@ -1,13 +1,12 @@
 <?php
 
-class ViewLogin extends View {
-    // Property to store authentication errors
+class ViewSignUp extends View {
+    // Property to store registration errors (e.g., email already taken)
     private $error_message;
 
     public function __construct($error_message = "") {
-        // Set the page title and body class for CSS targeting
-        $this->pageTitle = "Connexion - TradiShion";
-        $this->bodyClass = "login-page";
+        // Set the page title for the browser tab
+        $this->pageTitle = "Inscription - TradiShion";
         $this->error_message = $error_message;
     }
 
@@ -17,7 +16,7 @@ class ViewLogin extends View {
         <div class="login-container">
             <header class="login-header">
                 <h1>TRADISHION</h1>
-                <p>Connectez-vous à votre espace privé</p>
+                <p>Rejoignez notre communauté d'artisans</p>
             </header>
 
             <main class="login-card">
@@ -27,7 +26,22 @@ class ViewLogin extends View {
                     </div>
                 <?php endif; ?>
 
-                <form action="index.php?page=login" method="POST">
+                <form action="index.php?page=signup" method="POST">
+                    <div class="form-group">
+                        <label for="username">Nom d'utilisateur</label>
+                        <input type="text" name="username" id="username" placeholder="Votre nom d'utilisateur" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name">Nom</label>
+                        <input type="text" name="name" id="name" placeholder="Votre nom" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="firstname">Prénom</label>
+                        <input type="text" name="firstname" id="firstname" placeholder="Votre prénom" required>
+                    </div>
+
                     <div class="form-group">
                         <label for="email">Adresse email</label>
                         <input type="email" name="email" id="email" placeholder="votre@email.com" required>
@@ -38,16 +52,14 @@ class ViewLogin extends View {
                         <input type="password" name="password" id="password" placeholder="********" required>
                     </div>
 
-                    <button type="submit" class="btn-submit">SE CONNECTER</button>
-                    
-                    <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+                    <button type="submit" class="btn-submit">CRÉER MON COMPTE</button>
                 </form>
 
                 <div class="separator"></div>
 
                 <div class="register-link">
-                    <p>Vous n'avez pas de compte ?</p>
-                    <a href="index.php?page=signup" class="btn-outline">S'INSCRIRE</a>
+                    <p>Vous avez déjà un compte ?</p>
+                    <a href="index.php?page=login" class="btn-outline">SE CONNECTER</a>
                 </div>
             </main>
 
