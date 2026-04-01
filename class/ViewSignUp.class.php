@@ -26,10 +26,20 @@ class ViewSignUp extends View {
                     </div>
                 <?php endif; ?>
 
-                <form action="index.php?page=signup" method="POST">                    
+                <form action="index.php?page=signup" method="POST">
                     <div class="form-group">
-                        <label for="nom">Nom complet</label>
-                        <input type="text" name="nom" id="nom" placeholder="Votre nom complet" required>
+                        <label for="username">Nom d'utilisateur</label>
+                        <input type="text" name="username" id="username" placeholder="Votre nom d'utilisateur" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name">Nom</label>
+                        <input type="text" name="name" id="name" placeholder="Votre nom" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="firstname">Prénom</label>
+                        <input type="text" name="firstname" id="firstname" placeholder="Votre prénom" required>
                     </div>
 
                     <div class="form-group">
