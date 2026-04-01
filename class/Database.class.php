@@ -1,43 +1,27 @@
 <?php
 
 class Database {
-    // Database credentials
     private $host = 'localhost';
     private $db   = 'tradishion';
     private $user = 'tradishion';
     private $pass = '!*tradishion2026';
     
-    // PHP Data Object (PDO) instance
     private $pdo;
 
     public function __construct() {
         try {
-            // Establish the database connection
             $this->pdo = new PDO("mysql:host={$this->host};dbname={$this->db};charset=utf8", $this->user, $this->pass);
-            // Set error mode to exception to handle SQL errors properly
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            // Kill the script if the connection fails
             die("Database connection error: " . $e->getMessage());
         }
     }
 
-    // ---------- AUTHENTICATION METHODS ----------
-
-<<<<<<< HEAD
     public function authenticateUser($email, $password) {
-=======
-    /**
-     * Authenticates a user and creates a session if credentials are correct
-     */
-    public function authenticateUser($email, $password) {
-        // Prepare the SQL statement to find the user by email
->>>>>>> 4ebf829a978694ca016c9b8d60ba9e45bb8fa771
-        $stmt = $this->pdo->prepare("SELECT id_user, password_hash FROM users WHERE email = ?");
+        $stmt = $this->pdo->prepare("SELECT id_user, password_hash FROM users WHERE email = ? AND is_active = 1");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-<<<<<<< HEAD
         if ($user && password_verify($password, $user['password_hash'])) {
             $_SESSION['id_user'] = $user['id_user'];
             return true; 
@@ -48,96 +32,221 @@ class Database {
     public function registerUser($nom, $email, $password) {
         $stmt = $this->pdo->prepare("SELECT id_user FROM users WHERE email = ?");
         $stmt->execute([$email]);
-        if ($stmt->fetch()) {
-            return "Cette adresse email est déjà utilisée."; 
-        }
+        if ($stmt->fetch()) { return "Cette adresse email est déjà utilisée."; }
 
         $hash = password_hash($password, PASSWORD_DEFAULT);
-
         $stmt = $this->pdo->prepare("INSERT INTO users (display_name, email, password_hash) VALUES (?, ?, ?)");
-        if ($stmt->execute([$nom, $email, $hash])) {
-            return true; 
-        }
-        
+        if ($stmt->execute([$nom, $email, $hash])) { return true; }
         return "Une erreur est survenue lors de l'inscription."; 
     }
 
-    // ---------- FEED & MAP METHODS ----------
-
-    /**
-     * Récupère les posts pour le fil d'actualité et la carte
-     * Si $countryCode vaut 'all', on renvoie les derniers posts globaux.
-     */
+    // --- MISE À JOUR : Récupération des posts avec leurs images ---
     public function getFeedPosts($countryCode = 'all') {
-        if ($countryCode === 'all' || empty($countryCode)) {
-            $query = "SELECT u.display_name as author, u.location, p.title, p.body as content, h.slug as tag 
-                      FROM posts p
-                      JOIN users u ON p.id_author = u.id_user
-                      LEFT JOIN hashtags h ON p.id_hashtag = h.id_hashtag
-                      ORDER BY p.created_at DESC LIMIT 10";
-            $stmt = $this->pdo->prepare($query);
-            $stmt->execute();
-        } else {
-            $query = "SELECT u.display_name as author, u.location, p.title, p.body as content, h.slug as tag 
-                      FROM posts p
-                      JOIN users u ON p.id_author = u.id_user
-                      LEFT JOIN hashtags h ON p.id_hashtag = h.id_hashtag
-                      WHERE u.location = ?
-                      ORDER BY p.created_at DESC";
-            $stmt = $this->pdo->prepare($query);
-            $stmt->execute([$countryCode]);
-        }
-=======
-        // Verify the provided password against the stored hash
-        if ($user && password_verify($password, $user['password_hash'])) {
-            // Save the user ID in the session variables
-            $_SESSION['id_user'] = $user['id_user'];
-            return true; // Authentication successful
-        }
-        return false; // Authentication failed
-    }
-
-    /**
-     * Registers a new user into the database securely
-     */
-    public function registerUser($nom, $email, $password) {
-        // 1. Check if the email is already taken
-        $stmt = $this->pdo->prepare("SELECT id_user FROM users WHERE email = ?");
-        $stmt->execute([$email]);
-        if ($stmt->fetch()) {
-            return "Cette adresse email est déjà utilisée."; // Email exists
-        }
-
-        // 2. Hash the password (CRITICAL FOR SECURITY)
-        $hash = password_hash($password, PASSWORD_DEFAULT);
-
-        // 3. Insert the new user into the database
-        // (Using display_name to match the map query requirements)
-        $stmt = $this->pdo->prepare("INSERT INTO users (display_name, email, password_hash) VALUES (?, ?, ?)");
-        if ($stmt->execute([$nom, $email, $hash])) {
-            return true; // Registration successful
-        }
+        $sql = "SELECT p.id_post, u.display_name as author, u.avatar_url, u.location, p.title, p.body as content, p.created_at, med.file_path as image_url 
+                FROM posts p 
+                JOIN users u ON p.id_author = u.id_user 
+                LEFT JOIN post_media pm ON p.id_post = pm.id_post
+                LEFT JOIN media med ON pm.id_media = med.id_media ";
         
-        return "Une erreur est survenue lors de l'inscription."; // Registration failed
+        if ($countryCode !== 'all' && !empty($countryCode)) {
+            $sql .= " WHERE u.location = ? ";
+        }
+        $sql .= " ORDER BY p.created_at DESC LIMIT 20";
+        
+        $stmt = $this->pdo->prepare($sql);
+        if ($countryCode !== 'all' && !empty($countryCode)) {
+            $stmt->execute([$countryCode]);
+        } else {
+            $stmt->execute();
+        }
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // ---------- OTHER METHODS ----------
+    // --- NOUVEAU : Création d'un post (Texte + Image) ---
+    public function createPost($id_author, $content, $fileInfo = null) {
+        try {
+            $stmt = $this->pdo->prepare("INSERT INTO posts (id_author, body) VALUES (?, ?)");
+            $stmt->execute([$id_author, $content]);
+            $idPost = $this->pdo->lastInsertId();
 
-    /**
-     * Retrieves posts for the interactive map based on the user's country
-     */
-    public function getPostsByCountry($countryCode) {
-        $query = "SELECT u.display_name as author, p.title, p.body as content, h.tag_name as tag 
-                  FROM posts p
-                  JOIN users u ON p.id_author = u.id_user
-                  LEFT JOIN user_hashtags uh ON u.id_user = uh.id_user
-                  LEFT JOIN hashtags h ON uh.id_hashtag = h.id_hashtag
-                  WHERE u.location = ?";
-                  
+            if ($fileInfo && $fileInfo['error'] === UPLOAD_ERR_OK) {
+                $ext = pathinfo($fileInfo['name'], PATHINFO_EXTENSION);
+                $uuid = uniqid() . '.' . $ext;
+                $uploadDir = 'assets/images/';
+                if (!is_dir($uploadDir)) { mkdir($uploadDir, 0777, true); }
+                $filePath = $uploadDir . $uuid;
+
+                if (move_uploaded_file($fileInfo['tmp_name'], $filePath)) {
+                    $stmtMedia = $this->pdo->prepare("INSERT INTO media (id_uploader, file_name, original_name, file_path, media_type, is_public) VALUES (?, ?, ?, ?, 'image', 1)");
+                    $stmtMedia->execute([$id_author, $uuid, $fileInfo['name'], $filePath]);
+                    $idMedia = $this->pdo->lastInsertId();
+
+                    $stmtPivot = $this->pdo->prepare("INSERT INTO post_media (id_post, id_media) VALUES (?, ?)");
+                    $stmtPivot->execute([$idPost, $idMedia]);
+                }
+            }
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    public function sendConnectionRequest($idFollower, $idFollowed) {
+        $stmt = $this->pdo->prepare("SELECT * FROM connections WHERE (id_follower = ? AND id_followed = ?) OR (id_follower = ? AND id_followed = ?)");
+        $stmt->execute([$idFollower, $idFollowed, $idFollowed, $idFollower]);
+        if($stmt->fetch()) { return false; } 
+        
+        $query = "INSERT INTO connections (id_follower, id_followed, status) VALUES (?, ?, 'pending')";
         $stmt = $this->pdo->prepare($query);
-        $stmt->execute([$countryCode]);
->>>>>>> 4ebf829a978694ca016c9b8d60ba9e45bb8fa771
+        return $stmt->execute([$idFollower, $idFollowed]);
+    }
+
+    public function getPendingRequests($userId) {
+        $query = "SELECT c.id_follower, u.display_name, u.bio_free, u.location, u.avatar_url FROM connections c JOIN users u ON c.id_follower = u.id_user WHERE c.id_followed = ? AND c.status = 'pending' ORDER BY c.created_at DESC";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([$userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getConnections($userId) {
+        $query = "SELECT u.id_user, u.display_name, u.bio_free, u.location, u.avatar_url FROM connections c JOIN users u ON (u.id_user = c.id_follower OR u.id_user = c.id_followed) WHERE (c.id_follower = ? OR c.id_followed = ?) AND c.status = 'accepted' AND u.id_user != ? ORDER BY c.updated_at DESC";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([$userId, $userId, $userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function acceptConnection($idFollower, $idFollowed) {
+        $stmt = $this->pdo->prepare("SELECT * FROM connections WHERE id_follower = ? AND id_followed = ?");
+        $stmt->execute([$idFollower, $idFollowed]);
+        if($stmt->fetch()) {
+            $query = "UPDATE connections SET status = 'accepted' WHERE id_follower = ? AND id_followed = ?";
+            $stmt = $this->pdo->prepare($query);
+            return $stmt->execute([$idFollower, $idFollowed]);
+        } else {
+            $query = "INSERT INTO connections (id_follower, id_followed, status) VALUES (?, ?, 'accepted')";
+            $stmt = $this->pdo->prepare($query);
+            return $stmt->execute([$idFollower, $idFollowed]);
+        }
+    }
+
+    public function rejectConnection($idFollower, $idFollowed) {
+        $query = "DELETE FROM connections WHERE id_follower = ? AND id_followed = ?";
+        $stmt = $this->pdo->prepare($query);
+        return $stmt->execute([$idFollower, $idFollowed]);
+    }
+
+    public function deleteConnection($user1, $user2) {
+        $query = "DELETE FROM connections WHERE (id_follower = ? AND id_followed = ?) OR (id_follower = ? AND id_followed = ?)";
+        $stmt = $this->pdo->prepare($query);
+        return $stmt->execute([$user1, $user2, $user2, $user1]);
+    }
+
+    public function getChatHistory($user1, $user2) {
+        $query = "SELECT m.id_sender, m.content, m.sent_at, med.file_path 
+                  FROM messages m 
+                  LEFT JOIN message_media mm ON m.id_message = mm.id_message 
+                  LEFT JOIN media med ON mm.id_media = med.id_media 
+                  WHERE (m.id_sender = ? AND m.id_receiver = ?) 
+                     OR (m.id_sender = ? AND m.id_receiver = ?) 
+                  ORDER BY m.sent_at ASC";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([$user1, $user2, $user2, $user1]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function canSendMessage($idSender, $idReceiver) {
+        $queryConn = "SELECT status FROM connections WHERE (id_follower = ? AND id_followed = ?) OR (id_follower = ? AND id_followed = ?)";
+        $stmtConn = $this->pdo->prepare($queryConn);
+        $stmtConn->execute([$idSender, $idReceiver, $idReceiver, $idSender]);
+        $conn = $stmtConn->fetch(PDO::FETCH_ASSOC);
+
+        if ($conn && $conn['status'] === 'accepted') { return true; }
+
+        $queryMsg = "SELECT id_message FROM messages WHERE id_sender = ? AND id_receiver = ? AND is_first_message = 1";
+        $stmtMsg = $this->pdo->prepare($queryMsg);
+        $stmtMsg->execute([$idSender, $idReceiver]);
+        if ($stmtMsg->fetch()) { return false; }
+        return true; 
+    }
+
+    public function sendMessage($idSender, $idReceiver, $content, $fileInfo = null) {
+        if (!$this->canSendMessage($idSender, $idReceiver)) { return false; }
+        $isFirst = 1;
+        $stmtCheck = $this->pdo->prepare("SELECT id_message FROM messages WHERE id_sender = ? AND id_receiver = ?");
+        $stmtCheck->execute([$idSender, $idReceiver]);
+        if ($stmtCheck->fetch()) { $isFirst = 0; }
+
+        try {
+            $query = "INSERT INTO messages (id_sender, id_receiver, content, is_first_message) VALUES (?, ?, ?, ?)";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([$idSender, $idReceiver, $content, $isFirst]);
+            $idMessage = $this->pdo->lastInsertId();
+
+            if ($fileInfo && $fileInfo['error'] === UPLOAD_ERR_OK) {
+                $ext = pathinfo($fileInfo['name'], PATHINFO_EXTENSION);
+                $uuid = uniqid() . '.' . $ext;
+                $uploadDir = 'assets/images/';
+                if (!is_dir($uploadDir)) { mkdir($uploadDir, 0777, true); }
+                $filePath = $uploadDir . $uuid;
+
+                if (move_uploaded_file($fileInfo['tmp_name'], $filePath)) {
+                    $stmtMedia = $this->pdo->prepare("INSERT INTO media (id_uploader, file_name, original_name, file_path, media_type, is_public) VALUES (?, ?, ?, ?, 'image', 0)");
+                    $stmtMedia->execute([$idSender, $uuid, $fileInfo['name'], $filePath]);
+                    $idMedia = $this->pdo->lastInsertId();
+
+                    $stmtPivot = $this->pdo->prepare("INSERT INTO message_media (id_message, id_media) VALUES (?, ?)");
+                    $stmtPivot->execute([$idMessage, $idMedia]);
+                }
+            }
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    public function getUser($id_user) {
+        $stmt = $this->pdo->prepare("SELECT id_user, display_name, location, bio_free, avatar_url FROM users WHERE id_user = ?");
+        $stmt->execute([$id_user]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getRecommendations($id_user) {
+        $query = "SELECT id_user, display_name, bio_free, location, avatar_url FROM users WHERE id_user != ? AND id_user NOT IN (SELECT id_followed FROM connections WHERE id_follower = ?) LIMIT 3";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([$id_user, $id_user]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function updateProfile($id_user, $displayName, $location, $bio) {
+        $query = "UPDATE users SET display_name = ?, location = ?, bio_free = ? WHERE id_user = ?";
+        $stmt = $this->pdo->prepare($query);
+        return $stmt->execute([$displayName, $location, $bio, $id_user]);
+    }
+
+    public function searchUsers($term, $myId) {
+        $query = "SELECT id_user, display_name, bio_free, location, avatar_url FROM users WHERE display_name LIKE ? AND id_user != ? LIMIT 5";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute(["%$term%", $myId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function updateAvatar($id_user, $fileInfo) {
+        $ext = pathinfo($fileInfo['name'], PATHINFO_EXTENSION);
+        $uuid = uniqid() . '.' . $ext;
+        $uploadDir = 'assets/images/';
+        
+        if (!is_dir($uploadDir)) { mkdir($uploadDir, 0777, true); }
+        $filePath = $uploadDir . $uuid;
+
+        if (move_uploaded_file($fileInfo['tmp_name'], $filePath)) {
+            $stmt = $this->pdo->prepare("INSERT INTO media (id_uploader, file_name, original_name, file_path, media_type, is_public) VALUES (?, ?, ?, ?, 'image', 1)");
+            $stmt->execute([$id_user, $uuid, $fileInfo['name'], $filePath]);
+            
+            $stmt2 = $this->pdo->prepare("UPDATE users SET avatar_url = ? WHERE id_user = ?");
+            $stmt2->execute([$filePath, $id_user]);
+            return true;
+        }
+        return false;
     }
 }
 ?>

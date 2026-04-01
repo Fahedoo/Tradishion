@@ -1,53 +1,37 @@
 <?php
-// Start the session first to keep the user logged in
 session_start();
 
-// Error reporting configuration (useful for debugging)
 error_reporting(E_ALL & ~E_DEPRECATED);
 ini_set("display_errors", 1);
 
-// Define the constant for the autoloader and require it
 define("CHARGE_AUTOLOAD", true);
 require_once("inc/poo.inc.php"); 
 
-// Variables to store potential error messages for the views
 $errorMessageLogin = "";
 $errorMessageSignup = "";
 
-// Detect the requested page (default is the landing page)
 $page = isset($_GET["page"]) ? $_GET["page"] : "landing";
 
-// ---------- POST FORMS PROCESSING (Database) ----------
+// ---------- POST FORMS PROCESSING ----------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // The autoloader will automatically load Database.class.php
     $db = new Database(); 
 
-    // LOGIN Form Processing
     if ($page === 'login' && isset($_POST['email']) && isset($_POST['password'])) {
-        // Attempt to authenticate the user
         if ($db->authenticateUser(trim($_POST['email']), $_POST['password'])) {
-            // Success: redirect to the private dashboard
             header("Location: index.php?page=dashboard");
             exit();
         } else {
-            // Failure: set the error message
             $errorMessageLogin = "Adresse email ou mot de passe incorrect.";
         }
     }
 
-    // SIGNUP Form Processing
     if ($page === 'signup' && isset($_POST['nom']) && isset($_POST['email']) && isset($_POST['password'])) {
-        // Attempt to register the new user in the database
         $resultatInscription = $db->registerUser(trim($_POST['nom']), trim($_POST['email']), $_POST['password']);
-        
         if ($resultatInscription === true) {
-            // Registration successful: log the user in automatically for better UX
             $db->authenticateUser(trim($_POST['email']), $_POST['password']);
-            // Redirect to the private dashboard
             header("Location: index.php?page=dashboard");
             exit();
         } else {
-            // Failure: retrieve the specific error message (e.g., email already taken)
             $errorMessageSignup = $resultatInscription;
         }
     }
@@ -55,93 +39,167 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // ---------- ROUTING AND VIEWS DISPLAY ----------
 switch($page) {
-    case "login":
-<<<<<<< HEAD
-=======
-        // Instantiate the login view and pass any error message
->>>>>>> 4ebf829a978694ca016c9b8d60ba9e45bb8fa771
-        $view = new ViewLogin($errorMessageLogin);
-        echo $view;
-        break;
+    case "login": $view = new ViewLogin($errorMessageLogin); echo $view; break;
+    case "signup": $view = new ViewSignUp($errorMessageSignup); echo $view; break;
+    case "legal": $view = new ViewLegal(); echo $view; break;
+    case "privacy": $view = new ViewPrivacy(); echo $view; break;
+    case "gcu": $view = new ViewCGU(); echo $view; break;
 
-    case "signup":
-<<<<<<< HEAD
-=======
-        // Instantiate the signup view and pass any error message
->>>>>>> 4ebf829a978694ca016c9b8d60ba9e45bb8fa771
-        $view = new ViewSignUp($errorMessageSignup);
-        echo $view;
-        break;
-
-<<<<<<< HEAD
-=======
-    // --- KAINA'S LEGAL PAGES ---
->>>>>>> 4ebf829a978694ca016c9b8d60ba9e45bb8fa771
-    case "legal":
-        $view = new ViewLegal();
-        echo $view;
-        break;
-
-    case "privacy":
-        $view = new ViewPrivacy();
-        echo $view;
-        break;
-
-    case "gcu":
-        $view = new ViewCGU();
-        echo $view;
-        break;
-
-<<<<<<< HEAD
     case "dashboard":
-=======
-    // --- PRIVATE AREA ---
-    case "dashboard":
-        // SECURITY CHECK: Block access if the user is not logged in
->>>>>>> 4ebf829a978694ca016c9b8d60ba9e45bb8fa771
-        if (!isset($_SESSION['id_user'])) {
-            header("Location: index.php?page=login");
+        if (!isset($_SESSION['id_user'])) { header("Location: index.php?page=login"); exit(); }
+        $db = new Database();
+        $userData = $db->getUser($_SESSION['id_user']);
+        $recommendations = $db->getRecommendations($_SESSION['id_user']);
+        $view = new ViewDashboard($userData, $recommendations);
+        echo $view;
+        break;
+
+    // NOUVELLE ROUTE : EXPLORATEUR (Fil d'actualité)
+    case "explorer":
+        if (!isset($_SESSION['id_user'])) { header("Location: index.php?page=login"); exit(); }
+        $db = new Database();
+        
+        // Si l'utilisateur poste un nouveau message
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'new_post') {
+            $content = $_POST['content'] ?? '';
+            $fileInfo = (isset($_FILES['post_image']) && $_FILES['post_image']['error'] === UPLOAD_ERR_OK) ? $_FILES['post_image'] : null;
+            if ($content !== '' || $fileInfo) {
+                $db->createPost($_SESSION['id_user'], $content, $fileInfo);
+            }
+            header("Location: index.php?page=explorer");
             exit();
         }
-<<<<<<< HEAD
-        $view = new ViewDashboard();
+
+        $userData = $db->getUser($_SESSION['id_user']);
+        $recommendations = $db->getRecommendations($_SESSION['id_user']);
+        $posts = $db->getFeedPosts('all'); // Récupère tous les posts de la BDD
+        $view = new ViewExplorer($userData, $recommendations, $posts);
         echo $view;
         break;
 
-    // --- GESTION DE LA DÉCONNEXION ICI ---
+    case "profile":
+        if (!isset($_SESSION['id_user'])) { header("Location: index.php?page=login"); exit(); }
+        $db = new Database();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
+            $db->updateProfile($_SESSION['id_user'], $_POST['display_name'], $_POST['location'], $_POST['bio_free']);
+            if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
+                $db->updateAvatar($_SESSION['id_user'], $_FILES['avatar']);
+            }
+            header("Location: index.php?page=profile");
+            exit();
+        }
+        $userData = $db->getUser($_SESSION['id_user']);
+        $recommendations = $db->getRecommendations($_SESSION['id_user']);
+        $view = new ViewProfile($userData, $recommendations);
+        echo $view;
+        break;
+
+    case "network":
+        if (!isset($_SESSION['id_user'])) { header("Location: index.php?page=login"); exit(); }
+        $db = new Database();
+        $userData = $db->getUser($_SESSION['id_user']);
+        $view = new ViewNetwork($userData);
+        echo $view;
+        break;
+
+    case "messages":
+        if (!isset($_SESSION['id_user'])) { header("Location: index.php?page=login"); exit(); }
+        $view = new ViewMessages();
+        echo $view;
+        break;
+
     case "logout":
-        session_destroy(); // On détruit la session
-        header("Location: index.php"); // On redirige vers l'accueil
+        session_destroy();
+        header("Location: index.php");
         exit();
         break;
 
-    // --- ROUTE API POUR LA CARTE INTERACTIVE ET LE FEED ---
+    // --- ROUTES API ---
     case "api_posts":
-        // On nettoie tout affichage précédent et on dit au navigateur qu'on envoie du JSON
-        ob_clean(); 
-        header('Content-Type: application/json');
-        
+        ob_clean(); header('Content-Type: application/json');
         $db = new Database();
         $country = isset($_GET['country']) ? $_GET['country'] : 'all';
-        
-        // On récupère les posts et on les transforme en JSON
         echo json_encode($db->getFeedPosts($country));
-        exit(); // On arrête l'exécution ici pour ne pas charger les vues HTML
+        exit();
+        break;
+
+    case "api_send_request":
+        ob_clean(); header('Content-Type: application/json');
+        if(isset($_SESSION['id_user']) && isset($_POST['id_followed'])) {
+            $db = new Database();
+            $success = $db->sendConnectionRequest($_SESSION['id_user'], $_POST['id_followed']);
+            echo json_encode(['success' => $success]);
+        } else { echo json_encode(['success' => false]); }
+        exit();
+        break;
+
+    case "api_accept":
+        ob_clean(); header('Content-Type: application/json');
+        if(isset($_SESSION['id_user']) && isset($_POST['id_follower'])) {
+            $db = new Database();
+            $success = $db->acceptConnection($_POST['id_follower'], $_SESSION['id_user']);
+            echo json_encode(['success' => $success]);
+        } else { echo json_encode(['success' => false]); }
+        exit();
+        break;
+
+    case "api_reject":
+        ob_clean(); header('Content-Type: application/json');
+        if(isset($_SESSION['id_user']) && isset($_POST['id_follower'])) {
+            $db = new Database();
+            $success = $db->rejectConnection($_POST['id_follower'], $_SESSION['id_user']);
+            echo json_encode(['success' => $success]);
+        } else { echo json_encode(['success' => false]); }
+        exit();
+        break;
+
+    case "api_remove_connection":
+        ob_clean(); header('Content-Type: application/json');
+        if(isset($_SESSION['id_user']) && isset($_POST['id_contact'])) {
+            $db = new Database();
+            $success = $db->deleteConnection($_SESSION['id_user'], $_POST['id_contact']);
+            echo json_encode(['success' => $success]);
+        } else { echo json_encode(['success' => false]); }
+        exit();
+        break;
+
+    case "api_message":
+        ob_clean(); header('Content-Type: application/json');
+        if(isset($_SESSION['id_user']) && isset($_POST['id_receiver'])) {
+            $db = new Database();
+            $content = isset($_POST['content']) ? $_POST['content'] : '';
+            $fileInfo = (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) ? $_FILES['image'] : null;
+            
+            if ($content === '' && !$fileInfo) {
+                echo json_encode(['success' => false]);
+                exit();
+            }
+            
+            $success = $db->sendMessage($_SESSION['id_user'], $_POST['id_receiver'], $content, $fileInfo);
+            echo json_encode(['success' => $success]);
+        } else { echo json_encode(['success' => false]); }
+        exit();
+        break;
+
+    case "api_get_chat":
+        ob_clean(); header('Content-Type: application/json');
+        if(isset($_SESSION['id_user']) && isset($_GET['contact'])) {
+            $db = new Database();
+            echo json_encode($db->getChatHistory($_SESSION['id_user'], $_GET['contact']));
+        } else { echo json_encode([]); }
+        exit();
+        break;
+
+    case "api_search":
+        ob_clean(); header('Content-Type: application/json');
+        if(isset($_SESSION['id_user']) && isset($_GET['q'])) {
+            $db = new Database();
+            echo json_encode($db->searchUsers($_GET['q'], $_SESSION['id_user']));
+        } else { echo json_encode([]); }
+        exit();
         break;
 
     default:
-=======
-        // Temporary display for the dashboard
-        echo "<div style='text-align:center; padding:50px;'>";
-        echo "<h1>Espace Membre Tradishion</h1>";
-        echo "<p>Tu es bien connecté !</p>";
-        echo "<a href='logout.php' style='color: red; font-weight: bold;'>Se déconnecter</a>";
-        echo "</div>";
-        break;
-
-    default:
-        // Default route: display the public landing page
->>>>>>> 4ebf829a978694ca016c9b8d60ba9e45bb8fa771
         $view = new ViewLandingPage();
         echo $view;
         break;
