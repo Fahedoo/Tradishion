@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // ---------- ROUTING AND VIEWS DISPLAY ----------
 switch($page) {
+<<<<<<< HEAD
     case "login": $view = new ViewLogin($errorMessageLogin); echo $view; break;
     case "signup": $view = new ViewSignUp($errorMessageSignup); echo $view; break;
     case "legal": $view = new ViewLegal(); echo $view; break;
@@ -200,6 +201,53 @@ switch($page) {
         break;
 
     default:
+=======
+    case "login":
+        // Instantiate the login view and pass any error message
+        $view = new ViewLogin($errorMessageLogin);
+        echo $view;
+        break;
+
+    case "signup":
+        // Instantiate the signup view and pass any error message
+        $view = new ViewSignUp($errorMessageSignup);
+        echo $view;
+        break;
+
+    // --- KAINA'S LEGAL PAGES ---
+    case "legal":
+        $view = new ViewLegal();
+        echo $view;
+        break;
+
+    case "privacy":
+        $view = new ViewPrivacy();
+        echo $view;
+        break;
+
+    case "gcu":
+        $view = new ViewCGU();
+        echo $view;
+        break;
+
+    // --- PRIVATE AREA ---
+    case "dashboard":
+        // SECURITY CHECK: Block access if the user is not logged in
+        if (!isset($_SESSION['id_user'])) {
+            header("Location: index.php?page=login");
+            exit();
+        }
+        // Temporary display for the dashboard
+        echo "<div style='text-align:center; padding:50px;'>";
+        echo "<h1>Espace Membre Tradishion</h1>";
+        echo "<p>Tu es bien connecté !</p>";
+        echo "<a href='logout.php' style='color: red; font-weight: bold;'>Se déconnecter</a>";
+        echo "</div>";
+        break;
+
+    default:
+        // Default route: display the public landing page
+>>>>>>> dae1e28b82f50cb6a29be9f90de1e7a0baa5406c
         $view = new ViewLandingPage();
         echo $view;
         break;
