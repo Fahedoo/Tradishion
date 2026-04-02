@@ -21,7 +21,7 @@ body::-webkit-scrollbar {
 }
 
 body {
-    background-color: #fdfaf5; /* Couleur crÃ¨me de la maquette */
+    background-color: #fdfaf5; /* Couleur crème de la maquette */
     color: #333;
     line-height: 1.6;
     display: flex;
@@ -69,7 +69,7 @@ a {
     font-size: 1.5rem;
     font-weight: bold;
     letter-spacing: 1px;
-    color: white; /* Overrides default black for the header */
+    color: white;
 }
 
 .header-controls {
@@ -111,7 +111,7 @@ a {
 }
 
 .btn-signin {
-    background-color: #A64B35; /* Couleur terre cuite */
+    background-color: #A64B35;
     color: white;
     border: none;
 }
@@ -175,9 +175,14 @@ a {
 
 /* Features Section */
 .features-section {
+<<<<<<< HEAD
+    padding: 80px 50px;
+    background-color: transparent;
+=======
     padding: 130px 50px;
     min-height: 40vh;
     background-color: #fdfaf5;
+>>>>>>> dae1e28b82f50cb6a29be9f90de1e7a0baa5406c
 }
 
 .features-grid {
@@ -190,6 +195,12 @@ a {
 
 .feature-card {
     text-align: center;
+<<<<<<< HEAD
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+=======
     padding: 42px 36px;
     background: #fdfaf5;
     border: none;
@@ -201,6 +212,7 @@ a {
     font-size: 2.5rem;
     line-height: 1;
     margin-bottom: 30px;
+>>>>>>> dae1e28b82f50cb6a29be9f90de1e7a0baa5406c
 }
 
 .feature-card h3 {
@@ -241,10 +253,6 @@ a {
     box-shadow: none;
 }
 
-.image-row img:hover {
-    transform: none;
-}
-
 /* Footer */
 .footer {
     background: #1a1a1a;
@@ -281,8 +289,6 @@ a {
 }
 
 /* ---- LOGIN PAGE EXTRACTS ---- */
-/* Wrapping class assuming the login forms will have a designated centering container 
-   (Since body display:flex was removed to not break the landing page) */
 .login-page-wrapper {
     display: flex;
     justify-content: center;
@@ -296,11 +302,6 @@ a {
     max-width: 400px;
     margin: 40px auto;
     padding: 20px;
-}
-
-.login-page .login-container {
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .login-header {
@@ -319,7 +320,6 @@ a {
     font-weight: bold;
 }
 
-/* La carte blanche du formulaire */
 .login-card {
     background: #ffffff;
     padding: 40px;
@@ -349,14 +349,13 @@ a {
 
 .form-group input:focus {
     outline: none;
-    border-color: #a0522d; /* Couleur terre cuite au clic */
+    border-color: #a0522d;
 }
 
-/* Le bouton principal */
 .btn-submit {
     width: 100%;
     padding: 14px;
-    background-color: #A64B35; /* Couleur terre cuite */
+    background-color: #A64B35;
     color: white;
     border: none;
     border-radius: 10px;
@@ -377,7 +376,6 @@ a {
     font-size: 0.8rem;
     font-weight: bold;
     color: #4A5565;
-    text-decoration: none;
 }
 
 .separator {
@@ -386,7 +384,6 @@ a {
     margin: 25px 0;
 }
 
-/* Section inscription */
 .register-link {
     text-align: center;
 }
@@ -413,6 +410,7 @@ a {
 .btn-outline:hover {
     background: #a0522d;
     color: white;
+    border-color: #a0522d;
 }
 
 .login-footer {
@@ -426,7 +424,6 @@ a {
     font-weight: bold;
 }
 
-/* Style pour le message d'erreur PHP */
 .error-message {
     background-color: #f8d7da;
     color: #721c24;
@@ -437,126 +434,64 @@ a {
     text-align: center;
 }
 
-/* ---- DASHBOARD PRIVATE AREA ---- */
-
-.dashboard-body {
-    background-color: #f4f6f8; /* Fond légèrement plus gris pour différencier du site public */
-}
-
-.private-header {
-    background: #1a1a1a; /* En-tête sombre et opaque */
-    position: relative;
-}
-
-.dashboard-container {
-    display: grid;
-    grid-template-columns: 280px 1fr 320px; /* 3 colonnes : Profil, Carte, Agenda */
-    gap: 20px;
-    padding: 20px;
-    height: calc(100vh - 80px); /* Prend toute la hauteur moins le header */
-    max-width: 1600px;
-    margin: 0 auto;
-}
-
-/* Panneaux latéraux */
-.dashboard-sidebar, .dashboard-agenda {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    overflow-y: auto;
-}
-
-/* Carte Centrale */
-.dashboard-map-section {
+/* =========================================
+   STYLE DES PAGES LEGALES (CGU, Privacy...)
+   ========================================= */
+.legal-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 40px;
     background: white;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    overflow: hidden;
 }
 
-#map {
-    width: 100%;
-    height: 100%;
-}
-
-/* Composants du profil */
-.profile-card {
+.legal-content h1 {
     text-align: center;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 20px;
     margin-bottom: 20px;
+    font-size: 2rem;
+    color: #A64B35;
 }
 
-.profile-avatar {
-    font-size: 50px;
-    background: #fdfaf5;
-    width: 80px;
-    height: 80px;
-    line-height: 80px;
-    border-radius: 50%;
-    margin: 0 auto 10px;
-    border: 2px solid #A64B35;
+.legal-intro {
+    font-size: 1.1rem;
+    color: #555;
+    text-align: center;
+    margin-bottom: 30px;
 }
 
-.hashtags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    justify-content: center;
-    margin-top: 10px;
+.legal-section {
+    margin-bottom: 30px;
 }
 
-.tag {
-    background: #e9ecef;
-    font-size: 0.75rem;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-weight: bold;
-    color: #4A5565;
-}
-
-/* Événements de l'agenda */
-.event-card {
-    padding: 15px;
-    border-radius: 8px;
+.legal-section h2 {
+    font-size: 1.3rem;
+    color: #333;
     margin-bottom: 15px;
-    position: relative;
+    border-bottom: 2px solid #FFF0ED;
+    padding-bottom: 5px;
 }
 
-.event-card h4 {
-    margin: 10px 0 5px;
+.legal-section p, .legal-section ul {
+    color: #555;
+    line-height: 1.6;
     font-size: 0.95rem;
 }
 
-.event-card p {
-    font-size: 0.8rem;
-    color: #666;
+.legal-section ul {
+    padding-left: 20px;
+    margin-top: 10px;
 }
 
-.event-badge {
-    font-size: 0.7rem;
-    font-weight: bold;
-    padding: 3px 6px;
-    border-radius: 4px;
-    color: white;
+.legal-section li {
+    margin-bottom: 5px;
 }
-
-/* Couleurs des événements selon le cahier des charges */
-.private-event { background: #f8f9fa; border-left: 4px solid #adb5bd; }
-.private-event .event-badge { background: #adb5bd; }
-
-.shared-event { background: #fff5f2; border-left: 4px solid #A64B35; }
-.shared-event .event-badge { background: #A64B35; }
-
-.public-event { background: #f0f8ff; border-left: 4px solid #0d6efd; }
-.public-event .event-badge { background: #0d6efd; }
 
 /* =========================================
-   STYLE SPECIFIQUE DASHBOARD (Maquette)
+   STYLE SPECIFIQUE DASHBOARD & PRIVATE AREA
    ========================================= */
 .dashboard-body {
-    background-color: #F8F5F2; /* Fond crème de la maquette */
+    background-color: #F8F5F2; 
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
     padding: 0;
@@ -612,7 +547,7 @@ a {
 
 /* Profil Sidebar */
 .profile-overview { text-align: center; }
-.avatar-large { font-size: 50px; background: #eee; width: 80px; height: 80px; line-height: 80px; border-radius: 50%; margin: 0 auto 10px; }
+.avatar-large { font-size: 50px; background: #eee; width: 80px; height: 80px; line-height: 80px; border-radius: 50%; margin: 0 auto 10px; display:flex; align-items:center; justify-content:center;}
 .location { color: #888; font-size: 0.9rem; }
 .tags-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin-top: 15px; }
 .tag { background: #f0f0f0; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; color: #555; }
@@ -628,11 +563,21 @@ a {
 .rec-info { flex: 1; font-size: 0.85rem; line-height: 1.2; }
 .add-btn { background: #FFF0ED; border: none; color: #A64B35; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; }
 
-/* Centre (Carte et Feed) */
+/* Centre (Carte SVG) */
 .map-window { position: relative; height: 350px; background: #eef2f7; border-radius: 10px; overflow: hidden; margin-top: 15px; border: 1px solid #eee; }
 #svg-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; cursor: grab; }
 .zoom-controls { position: absolute; top: 10px; left: 10px; z-index: 10; display: flex; flex-direction: column; background: white; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-.zoom-controls button { width: 30px; height: 30px; border: none; background: transparent; cursor: pointer; font-size: 16px; color: #555; }
+.zoom-controls button { width: 30px; height: 30px; border: none; background: transparent; cursor: pointer; font-size: 16px; color: #555; border-bottom: 1px solid #eee; }
+
+#svg-container svg path {
+    fill: #d1d9e6 !important;
+    stroke: #ffffff !important;
+    stroke-width: 0.5 !important;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+#svg-container svg path:hover { fill: #ebdbd8 !important; }
+#svg-container svg path.active { fill: #A64B35 !important; }
 
 /* Posts Feed */
 .feed-post { border: 1px solid #eee; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
@@ -661,4 +606,54 @@ a {
 .badge-shared { background: #d98a72; }
 .badge-public { background: #0d6efd; }
 
+<<<<<<< HEAD
+.btn-create-event { width: 100%; background: #A64B35; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 15px; transition: 0.3s; }
+.btn-create-event:hover { background: #8b3d2b; }
+
+/* =========================================
+   STYLE SPECIFIQUE RESEAU ET MESSAGES
+   ========================================= */
+.network-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.pending-requests .request-item:last-child {
+    border-bottom: none !important;
+}
+
+.connection-card {
+    transition: all 0.2s ease;
+}
+
+.connection-card:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+}
+
+.chat-container .card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+
+.contact-item:hover {
+    background: #fdfaf5 !important;
+}
+
+.contact-item.active {
+    border-left: 4px solid #A64B35;
+    background: #fdfdfd;
+}
+
+.chat-history::-webkit-scrollbar, .contact-list::-webkit-scrollbar {
+    width: 6px;
+}
+.chat-history::-webkit-scrollbar-thumb, .contact-list::-webkit-scrollbar-thumb {
+    background-color: #ddd;
+    border-radius: 10px;
+}
+=======
 .btn-create-event { width: 100%; background: #A64B35; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+>>>>>>> dae1e28b82f50cb6a29be9f90de1e7a0baa5406c
