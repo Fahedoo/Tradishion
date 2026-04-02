@@ -238,14 +238,12 @@ class Database {
         }
     }
 
-    // --- MISE À JOUR : Ajout des nouveaux champs (skills, interests, etc.) ---
     public function getUser($id_user) {
         $stmt = $this->pdo->prepare("SELECT id_user, display_name, location, bio_free, avatar_url, banner_url, contact_email, website, social_link, skills, interests FROM users WHERE id_user = ?");
         $stmt->execute([$id_user]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // --- MISE À JOUR : Enregistrement des nouveaux champs ---
     public function updateProfile($id_user, $displayName, $location, $bio, $contactEmail, $website, $socialLink, $skills, $interests) {
         $query = "UPDATE users SET display_name = ?, location = ?, bio_free = ?, contact_email = ?, website = ?, social_link = ?, skills = ?, interests = ? WHERE id_user = ?";
         $stmt = $this->pdo->prepare($query);
@@ -338,21 +336,6 @@ class Database {
         }
     }
 
-    public function getEventsForUser($userId) {
-        $query = "SELECT e.id_event, e.title, e.start_time, e.end_time, e.visibility, e.description, DATE(e.start_time) as event_date 
-                  FROM events e 
-                  WHERE e.visibility = 'public' 
-                     OR e.id_organizer = ? 
-                     OR (e.visibility = 'shared' AND (
-                         e.id_organizer IN (SELECT id_followed FROM connections WHERE id_follower = ? AND status = 'accepted')
-                         OR 
-                         e.id_organizer IN (SELECT id_follower FROM connections WHERE id_followed = ? AND status = 'accepted')
-                     ))";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([$userId, $userId, $userId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
     public function getConnectionStatus($user1, $user2) {
         $stmt = $this->pdo->prepare("SELECT status, id_follower FROM connections WHERE (id_follower = ? AND id_followed = ?) OR (id_follower = ? AND id_followed = ?)");
         $stmt->execute([$user1, $user2, $user2, $user1]);
@@ -376,6 +359,79 @@ class Database {
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$myId, $userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // --- GESTION DES EVENEMENTS & INVITATIONS ---
+    public function getTodayPublicEvents() {
+        $query = "SELECT e.*, u.display_name as organizer_name, u.avatar_url, med.file_path as image_url
+                  FROM events e
+                  JOIN users u ON e.id_organizer = u.id_user
+                  LEFT JOIN event_media em ON e.id_event = em.id_event AND em.role = 'cover'
+                  LEFT JOIN media med ON em.id_media = med.id_media
+                  WHERE e.visibility = 'public' AND DATE(e.start_time) = CURDATE()
+                  ORDER BY e.start_time ASC";
+        $stmt = $this->pdo->query($query);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // MISE À JOUR : On récupère NOS événements et ceux où on a DIT OUI !
+    public function getMyOrganizedEvents($userId) {
+        $query = "SELECT e.*, med.file_path as image_url, u.display_name as organizer_name
+                  FROM events e
+                  LEFT JOIN event_media em ON e.id_event = em.id_event AND em.role = 'cover'
+                  LEFT JOIN media med ON em.id_media = med.id_media
+                  LEFT JOIN users u ON e.id_organizer = u.id_user
+                  WHERE e.id_organizer = ? 
+                     OR e.id_event IN (SELECT id_event FROM event_participants WHERE id_user = ? AND status = 'accepted')
+                  ORDER BY e.start_time DESC";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([$userId, $userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function inviteUserToEvent($id_event, $id_user) {
+        try {
+            $stmt = $this->pdo->prepare("INSERT IGNORE INTO event_participants (id_event, id_user, status) VALUES (?, ?, 'invited')");
+            $stmt->execute([$id_event, $id_user]);
+            return true;
+        } catch(Exception $e) {
+            return false;
+        }
+    }
+
+    public function getEventsForUser($userId) {
+        $query = "SELECT e.id_event, e.title, e.start_time, e.end_time, e.visibility, e.description, DATE(e.start_time) as event_date 
+                  FROM events e 
+                  LEFT JOIN event_participants ep ON e.id_event = ep.id_event
+                  WHERE e.visibility = 'public' 
+                     OR e.id_organizer = ? 
+                     OR ep.id_user = ? 
+                     OR (e.visibility = 'shared' AND (
+                         e.id_organizer IN (SELECT id_followed FROM connections WHERE id_follower = ? AND status = 'accepted')
+                         OR 
+                         e.id_organizer IN (SELECT id_follower FROM connections WHERE id_followed = ? AND status = 'accepted')
+                     ))";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([$userId, $userId, $userId, $userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getPendingEventInvitations($userId) {
+        $query = "SELECT e.*, u.display_name as organizer_name, ep.status 
+                  FROM events e 
+                  JOIN event_participants ep ON e.id_event = ep.id_event 
+                  JOIN users u ON e.id_organizer = u.id_user 
+                  WHERE ep.id_user = ? AND ep.status = 'invited'
+                  ORDER BY e.start_time ASC";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function respondToEventInvite($id_event, $id_user, $status) {
+        $query = "UPDATE event_participants SET status = ? WHERE id_event = ? AND id_user = ?";
+        $stmt = $this->pdo->prepare($query);
+        return $stmt->execute([$status, $id_event, $id_user]);
     }
 }
 ?>

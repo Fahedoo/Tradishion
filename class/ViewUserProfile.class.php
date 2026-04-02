@@ -55,11 +55,12 @@ class ViewUserProfile extends ViewPrivate {
                 <aside style="display:flex; flex-direction:column; gap:20px;">
                     <div class="card nav-menu" style="margin-bottom:0;">
                        <ul style="list-style: none; padding: 0; margin: 0;">
-                            <li><a href="index.php?page=dashboard">🏠 Accueil</a></li>
-                            <li><a href="index.php?page=explorer">🧭 Explorateur</a></li>
-                            <li><a href="index.php?page=messages">💬 Mes Messages</a></li>
-                            <li><a href="index.php?page=network">👥 Mon Réseau</a></li>
-                        </ul>
+    <li><a href="index.php?page=dashboard">🏠 Accueil</a></li>
+    <li><a href="index.php?page=explorer">🧭 Explorateur</a></li>
+    <li><a href="index.php?page=events">📅 Événements</a></li>
+    <li><a href="index.php?page=messages">💬 Mes Messages</a></li>
+    <li><a href="index.php?page=network">👥 Mon Réseau</a></li>
+</ul>
                     </div>
 
                     <div class="card" style="margin-bottom:0;">

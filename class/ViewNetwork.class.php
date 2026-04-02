@@ -33,12 +33,13 @@ class ViewNetwork extends ViewPrivate {
                     <span style="color:#666;">Relations totales</span><strong><?php echo count($myConnections); ?></strong>
                 </div>
                 <div class="card nav-menu">
-                    <ul style="list-style: none; padding: 0;">
-                        <li><a href="index.php?page=dashboard">🏠 Accueil</a></li>
-                        <li><a href="index.php?page=explorer">🧭 Explorateur</a></li>
-                        <li><a href="index.php?page=messages">💬 Mes Messages</a></li>
-                        <li><a href="index.php?page=network" class="active" style="background:#FFF0ED; color:#A64B35; font-weight:bold;">👥 Mon Réseau</a></li>
-                    </ul>
+                   <ul style="list-style: none; padding: 0; margin: 0;">
+    <li><a href="index.php?page=dashboard">🏠 Accueil</a></li>
+    <li><a href="index.php?page=explorer">🧭 Explorateur</a></li>
+    <li><a href="index.php?page=events">📅 Événements</a></li>
+    <li><a href="index.php?page=messages">💬 Mes Messages</a></li>
+    <li><a href="index.php?page=network">👥 Mon Réseau</a></li>
+</ul>
                 </div>
             </aside>
 

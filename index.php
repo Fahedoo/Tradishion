@@ -75,6 +75,23 @@ switch($page) {
         echo $view;
         break;
 
+    // --- MISE À JOUR : Les Événements intègrent les invitations ---
+    case "events":
+        if (!isset($_SESSION['id_user'])) { header("Location: index.php?page=login"); exit(); }
+        $db = new Database();
+        $myId = $_SESSION['id_user'];
+        $userData = $db->getUser($myId);
+        $todayPublicEvents = $db->getTodayPublicEvents();
+        $myOrganizedEvents = $db->getMyOrganizedEvents($myId);
+        $myConnections = $db->getConnections($myId);
+        
+        // On récupère les invitations en attente
+        $pendingEventInvites = $db->getPendingEventInvitations($myId);
+        
+        $view = new ViewEvents($userData, $todayPublicEvents, $myOrganizedEvents, $myConnections, $pendingEventInvites);
+        echo $view;
+        break;
+
     case "profile":
         if (!isset($_SESSION['id_user'])) { header("Location: index.php?page=login"); exit(); }
         $db = new Database();
@@ -96,7 +113,6 @@ switch($page) {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
-            // AJOUT DES NOUVEAUX CHAMPS AU MOMENT DE LA MISE À JOUR
             $db->updateProfile(
                 $myId, 
                 $_POST['display_name'], 
@@ -277,6 +293,27 @@ switch($page) {
                 $_POST['meeting_url'] ?? null,
                 $fileInfo
             );
+            echo json_encode(['success' => $success]);
+        } else { echo json_encode(['success' => false]); }
+        exit();
+        break;
+
+    case "api_invite_event":
+        ob_clean(); header('Content-Type: application/json');
+        if(isset($_SESSION['id_user']) && isset($_POST['id_event']) && isset($_POST['id_guest'])) {
+            $db = new Database();
+            $success = $db->inviteUserToEvent($_POST['id_event'], $_POST['id_guest']);
+            echo json_encode(['success' => $success]);
+        } else { echo json_encode(['success' => false]); }
+        exit();
+        break;
+
+    // --- NOUVELLE ROUTE API : Répondre à une invitation ---
+    case "api_respond_event_invite":
+        ob_clean(); header('Content-Type: application/json');
+        if(isset($_SESSION['id_user']) && isset($_POST['id_event']) && isset($_POST['status'])) {
+            $db = new Database();
+            $success = $db->respondToEventInvite($_POST['id_event'], $_SESSION['id_user'], $_POST['status']);
             echo json_encode(['success' => $success]);
         } else { echo json_encode(['success' => false]); }
         exit();

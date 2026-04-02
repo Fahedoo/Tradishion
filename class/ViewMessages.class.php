@@ -19,11 +19,12 @@ class ViewMessages extends ViewPrivate {
                 
                 <div class="card nav-menu" style="margin-bottom:0; flex-shrink:0;">
                    <ul style="list-style: none; padding: 0; margin: 0;">
-                        <li><a href="index.php?page=dashboard">🏠 Accueil</a></li>
-                        <li><a href="index.php?page=explorer">🧭 Explorateur</a></li>
-                        <li><a href="index.php?page=messages" class="active" style="background:#FFF0ED; color:#A64B35; font-weight:bold;">💬 Mes Messages</a></li>
-                        <li><a href="index.php?page=network">👥 Mon Réseau</a></li>
-                    </ul>
+    <li><a href="index.php?page=dashboard">🏠 Accueil</a></li>
+    <li><a href="index.php?page=explorer">🧭 Explorateur</a></li>
+    <li><a href="index.php?page=events">📅 Événements</a></li>
+    <li><a href="index.php?page=messages">💬 Mes Messages</a></li>
+    <li><a href="index.php?page=network">👥 Mon Réseau</a></li>
+</ul>
                 </div>
 
                 <aside class="chat-sidebar card" style="flex:1; display:flex; flex-direction:column; padding:0; overflow:hidden; margin-bottom:0;">
