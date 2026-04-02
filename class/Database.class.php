@@ -40,7 +40,6 @@ class Database {
         return "Une erreur est survenue lors de l'inscription."; 
     }
 
-    // --- MISE À JOUR : Récupération des cœurs (Likes) ---
     public function getFeedPosts($countryCode = 'all', $myId = 0) {
         $sql = "SELECT p.id_post, p.id_author, u.display_name as author, u.avatar_url, u.location, p.title, p.body as content, p.created_at, med.file_path as image_url,
                 (SELECT COUNT(*) FROM post_likes WHERE id_post = p.id_post) as likes_count,
@@ -63,17 +62,14 @@ class Database {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // --- NOUVEAU : Ajouter / Retirer un Like ---
     public function toggleLike($id_post, $id_user) {
         $stmt = $this->pdo->prepare("SELECT * FROM post_likes WHERE id_post = ? AND id_user = ?");
         $stmt->execute([$id_post, $id_user]);
         if ($stmt->fetch()) {
-            // Le like existe déjà, on l'enlève
             $del = $this->pdo->prepare("DELETE FROM post_likes WHERE id_post = ? AND id_user = ?");
             $del->execute([$id_post, $id_user]);
             return ['status' => 'unliked'];
         } else {
-            // Le like n'existe pas, on l'ajoute
             $ins = $this->pdo->prepare("INSERT INTO post_likes (id_post, id_user) VALUES (?, ?)");
             $ins->execute([$id_post, $id_user]);
             return ['status' => 'liked'];
@@ -242,10 +238,18 @@ class Database {
         }
     }
 
+    // --- MISE À JOUR : Ajout des nouveaux champs (skills, interests, etc.) ---
     public function getUser($id_user) {
-        $stmt = $this->pdo->prepare("SELECT id_user, display_name, location, bio_free, avatar_url FROM users WHERE id_user = ?");
+        $stmt = $this->pdo->prepare("SELECT id_user, display_name, location, bio_free, avatar_url, banner_url, contact_email, website, social_link, skills, interests FROM users WHERE id_user = ?");
         $stmt->execute([$id_user]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // --- MISE À JOUR : Enregistrement des nouveaux champs ---
+    public function updateProfile($id_user, $displayName, $location, $bio, $contactEmail, $website, $socialLink, $skills, $interests) {
+        $query = "UPDATE users SET display_name = ?, location = ?, bio_free = ?, contact_email = ?, website = ?, social_link = ?, skills = ?, interests = ? WHERE id_user = ?";
+        $stmt = $this->pdo->prepare($query);
+        return $stmt->execute([$displayName, $location, $bio, $contactEmail, $website, $socialLink, $skills, $interests, $id_user]);
     }
 
     public function getRecommendations($id_user) {
@@ -253,12 +257,6 @@ class Database {
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([$id_user, $id_user]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function updateProfile($id_user, $displayName, $location, $bio) {
-        $query = "UPDATE users SET display_name = ?, location = ?, bio_free = ? WHERE id_user = ?";
-        $stmt = $this->pdo->prepare($query);
-        return $stmt->execute([$displayName, $location, $bio, $id_user]);
     }
 
     public function searchUsers($term, $myId) {
@@ -281,6 +279,25 @@ class Database {
             $stmt->execute([$id_user, $uuid, $fileInfo['name'], $filePath]);
             
             $stmt2 = $this->pdo->prepare("UPDATE users SET avatar_url = ? WHERE id_user = ?");
+            $stmt2->execute([$filePath, $id_user]);
+            return true;
+        }
+        return false;
+    }
+
+    public function updateBanner($id_user, $fileInfo) {
+        $ext = pathinfo($fileInfo['name'], PATHINFO_EXTENSION);
+        $uuid = uniqid() . '.' . $ext;
+        $uploadDir = 'assets/images/';
+        
+        if (!is_dir($uploadDir)) { mkdir($uploadDir, 0777, true); }
+        $filePath = $uploadDir . $uuid;
+
+        if (move_uploaded_file($fileInfo['tmp_name'], $filePath)) {
+            $stmt = $this->pdo->prepare("INSERT INTO media (id_uploader, file_name, original_name, file_path, media_type, is_public) VALUES (?, ?, ?, ?, 'image', 1)");
+            $stmt->execute([$id_user, $uuid, $fileInfo['name'], $filePath]);
+            
+            $stmt2 = $this->pdo->prepare("UPDATE users SET banner_url = ? WHERE id_user = ?");
             $stmt2->execute([$filePath, $id_user]);
             return true;
         }
@@ -346,7 +363,6 @@ class Database {
         return false;
     }
 
-    // --- MISE À JOUR : Récupération des cœurs (Likes) pour un profil spécifique ---
     public function getUserPosts($userId, $myId = 0) {
         $sql = "SELECT p.id_post, p.id_author, u.display_name as author, u.avatar_url, u.location, p.title, p.body as content, p.created_at, med.file_path as image_url,
                 (SELECT COUNT(*) FROM post_likes WHERE id_post = p.id_post) as likes_count,

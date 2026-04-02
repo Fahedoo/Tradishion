@@ -96,10 +96,26 @@ switch($page) {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
-            $db->updateProfile($myId, $_POST['display_name'], $_POST['location'], $_POST['bio_free']);
+            // AJOUT DES NOUVEAUX CHAMPS AU MOMENT DE LA MISE À JOUR
+            $db->updateProfile(
+                $myId, 
+                $_POST['display_name'], 
+                $_POST['location'], 
+                $_POST['bio_free'],
+                $_POST['contact_email'] ?? '',
+                $_POST['website'] ?? '',
+                $_POST['social_link'] ?? '',
+                $_POST['skills'] ?? '',
+                $_POST['interests'] ?? ''
+            );
+            
             if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
                 $db->updateAvatar($myId, $_FILES['avatar']);
             }
+            if (isset($_FILES['banner']) && $_FILES['banner']['error'] === UPLOAD_ERR_OK) {
+                $db->updateBanner($myId, $_FILES['banner']);
+            }
+            
             header("Location: index.php?page=profile");
             exit();
         }
@@ -140,7 +156,6 @@ switch($page) {
         exit();
         break;
 
-    // NOUVELLE ROUTE : Like de post
     case "api_like_post":
         ob_clean(); header('Content-Type: application/json');
         if(isset($_SESSION['id_user']) && isset($_POST['id_post'])) {
