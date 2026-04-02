@@ -3,7 +3,6 @@
 class ViewLandingPage extends View {
     
     public function __construct() {
-        // On peut personnaliser le titre de la page pour cette vue spécifiquement
         $this->pageTitle = "Tradishion - Legacy comes to life";
         $this->bodyClass = "landing-page";
     }
@@ -11,7 +10,6 @@ class ViewLandingPage extends View {
     protected function getBodyContent() {
         ob_start();
         ?>
-        <!-- Hero Section with Background Video -->
         <section class="hero-video-section">
             <video autoplay muted loop class="hero-video">
                 <source src="assets/videos/HeroBackground.mp4" type="video/mp4">
@@ -27,7 +25,6 @@ class ViewLandingPage extends View {
             </div>
         </section>
 
-        <!-- 3 Main Features Section -->
         <section class="features-section">
             <div class="container features-grid">
                 <div class="feature-card">
@@ -48,7 +45,6 @@ class ViewLandingPage extends View {
             </div>
         </section>
 
-        <!-- Images Preview Section -->
         <section class="images-preview-section">
             <div class="image-row">
                 <img src="assets/images/VietnameseFabric.jpg" alt="Traditional fabric patterns">

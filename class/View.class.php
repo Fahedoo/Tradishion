@@ -20,10 +20,9 @@ abstract class View {
             <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
         </head>
         <body class="<?php echo htmlspecialchars($this->bodyClass); ?>">
-            <!-- Header global -->
             <header class="main-header">
                 <div class="header-logo">
-                    <img src="assets/images/logowhite.webp" alt="White_Logo">
+                    <img src="assets/images/logowhite.webp" alt="White_Logo" style="height: 35px; object-fit: contain;">
                 </div>
                 <div class="header-controls">
                     <div class="header-languages">
@@ -47,7 +46,6 @@ abstract class View {
     protected function getFooter() {
         ob_start();
         ?>
-            <!-- Footer global -->
             <footer class="footer">
                 <div class="footer-content">
                     <ul class="footer-links">

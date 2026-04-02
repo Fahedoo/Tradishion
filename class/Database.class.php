@@ -40,9 +40,9 @@ class Database {
         return "Une erreur est survenue lors de l'inscription."; 
     }
 
-    // --- MISE À JOUR : Récupération des posts avec leurs images ---
     public function getFeedPosts($countryCode = 'all') {
-        $sql = "SELECT p.id_post, u.display_name as author, u.avatar_url, u.location, p.title, p.body as content, p.created_at, med.file_path as image_url 
+        // AJOUT DE p.id_author POUR LES LIENS VERS LE PROFIL
+        $sql = "SELECT p.id_post, p.id_author, u.display_name as author, u.avatar_url, u.location, p.title, p.body as content, p.created_at, med.file_path as image_url 
                 FROM posts p 
                 JOIN users u ON p.id_author = u.id_user 
                 LEFT JOIN post_media pm ON p.id_post = pm.id_post
@@ -62,7 +62,6 @@ class Database {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // --- NOUVEAU : Création d'un post (Texte + Image) ---
     public function createPost($id_author, $content, $fileInfo = null) {
         try {
             $stmt = $this->pdo->prepare("INSERT INTO posts (id_author, body) VALUES (?, ?)");
@@ -86,6 +85,27 @@ class Database {
                 }
             }
             return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    public function getComments($id_post) {
+        $query = "SELECT c.content, c.created_at, u.display_name as author, u.avatar_url 
+                  FROM comments c
+                  JOIN users u ON c.id_author = u.id_user
+                  WHERE c.id_post = ?
+                  ORDER BY c.created_at ASC";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([$id_post]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function addComment($id_post, $id_author, $content) {
+        try {
+            $query = "INSERT INTO comments (id_post, id_author, content) VALUES (?, ?, ?)";
+            $stmt = $this->pdo->prepare($query);
+            return $stmt->execute([$id_post, $id_author, $content]);
         } catch (Exception $e) {
             return false;
         }
@@ -247,6 +267,80 @@ class Database {
             return true;
         }
         return false;
+    }
+
+    public function createEvent($id_organizer, $title, $date, $start_time, $end_time, $description, $visibility, $meeting_url, $fileInfo = null) {
+        try {
+            $start_datetime = $date . ' ' . (!empty($start_time) ? $start_time : '00:00') . ':00';
+            $end_datetime = $date . ' ' . (!empty($end_time) ? $end_time : '23:59') . ':00';
+
+            $query = "INSERT INTO events (id_organizer, title, description, visibility, start_time, end_time, meeting_url) 
+                      VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([$id_organizer, $title, $description, $visibility, $start_datetime, $end_datetime, $meeting_url]);
+            $idEvent = $this->pdo->lastInsertId();
+
+            if ($fileInfo && $fileInfo['error'] === UPLOAD_ERR_OK) {
+                $ext = pathinfo($fileInfo['name'], PATHINFO_EXTENSION);
+                $uuid = uniqid() . '.' . $ext;
+                $uploadDir = 'assets/images/';
+                if (!is_dir($uploadDir)) { mkdir($uploadDir, 0777, true); }
+                $filePath = $uploadDir . $uuid;
+
+                if (move_uploaded_file($fileInfo['tmp_name'], $filePath)) {
+                    $stmtMedia = $this->pdo->prepare("INSERT INTO media (id_uploader, file_name, original_name, file_path, media_type, is_public) VALUES (?, ?, ?, ?, 'image', 1)");
+                    $stmtMedia->execute([$id_organizer, $uuid, $fileInfo['name'], $filePath]);
+                    $idMedia = $this->pdo->lastInsertId();
+
+                    $stmtPivot = $this->pdo->prepare("INSERT INTO event_media (id_event, id_media, role) VALUES (?, ?, 'cover')");
+                    $stmtPivot->execute([$idEvent, $idMedia]);
+                }
+            }
+
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    public function getEventsForUser($userId) {
+        $query = "SELECT e.id_event, e.title, e.start_time, e.end_time, e.visibility, e.description, DATE(e.start_time) as event_date 
+                  FROM events e 
+                  WHERE e.visibility = 'public' 
+                     OR e.id_organizer = ? 
+                     OR (e.visibility = 'shared' AND (
+                         e.id_organizer IN (SELECT id_followed FROM connections WHERE id_follower = ? AND status = 'accepted')
+                         OR 
+                         e.id_organizer IN (SELECT id_follower FROM connections WHERE id_followed = ? AND status = 'accepted')
+                     ))";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([$userId, $userId, $userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // --- NOUVEAU : STATUT DES RELATIONS ---
+    public function getConnectionStatus($user1, $user2) {
+        $stmt = $this->pdo->prepare("SELECT status, id_follower FROM connections WHERE (id_follower = ? AND id_followed = ?) OR (id_follower = ? AND id_followed = ?)");
+        $stmt->execute([$user1, $user2, $user2, $user1]);
+        $conn = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($conn) {
+            return ['status' => $conn['status'], 'is_follower' => ($conn['id_follower'] == $user1)];
+        }
+        return false;
+    }
+
+    // --- NOUVEAU : RECUPERER LES CREATIONS D'UN UTILISATEUR ---
+    public function getUserPosts($userId) {
+        $sql = "SELECT p.id_post, p.id_author, u.display_name as author, u.avatar_url, u.location, p.title, p.body as content, p.created_at, med.file_path as image_url 
+                FROM posts p 
+                JOIN users u ON p.id_author = u.id_user 
+                LEFT JOIN post_media pm ON p.id_post = pm.id_post
+                LEFT JOIN media med ON pm.id_media = med.id_media 
+                WHERE p.id_author = ? 
+                ORDER BY p.created_at DESC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 ?>

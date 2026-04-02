@@ -6,20 +6,6 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-html,
-body {
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-    display: none;
-}
-
 body {
     background-color: #fdfaf5; /* Couleur crème de la maquette */
     color: #333;
@@ -56,7 +42,7 @@ a {
 
 .landing-page .main-header {
     position: absolute;
-    background: transparent;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
 }
 
 .header-logo img {
@@ -124,7 +110,6 @@ a {
 .hero-video-section {
     position: relative;
     height: 100vh;
-    min-height: calc(100vh + 80px);
     width: 100%;
     overflow: hidden;
     display: flex;
@@ -135,9 +120,11 @@ a {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 100%;
-    height: 100%;
-    transform: translate(-50%, -50%) scale(1.2);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translateX(-50%) translateY(-50%);
     z-index: -1;
     object-fit: cover;
 }
@@ -175,55 +162,34 @@ a {
 
 /* Features Section */
 .features-section {
-<<<<<<< HEAD
     padding: 80px 50px;
     background-color: transparent;
-=======
-    padding: 130px 50px;
-    min-height: 40vh;
-    background-color: #fdfaf5;
->>>>>>> dae1e28b82f50cb6a29be9f90de1e7a0baa5406c
 }
 
 .features-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    gap: 40px;
     max-width: 1200px;
     margin: 0 auto;
 }
 
 .feature-card {
     text-align: center;
-<<<<<<< HEAD
     padding: 30px;
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-=======
-    padding: 42px 36px;
-    background: #fdfaf5;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-}
-
-.feature-icon {
-    font-size: 2.5rem;
-    line-height: 1;
-    margin-bottom: 30px;
->>>>>>> dae1e28b82f50cb6a29be9f90de1e7a0baa5406c
 }
 
 .feature-card h3 {
-    font-size: 1.45rem;
-    margin-bottom: 18px;
+    font-size: 1.3rem;
+    margin-bottom: 15px;
     font-family: 'Libre Baskerville', serif;
     color: #0A0A0A;
 }
 
 .feature-card p {
-    font-size: 1.05rem;
     color: #4A5565;
     font-weight: 500;
 }
@@ -606,7 +572,6 @@ a {
 .badge-shared { background: #d98a72; }
 .badge-public { background: #0d6efd; }
 
-<<<<<<< HEAD
 .btn-create-event { width: 100%; background: #A64B35; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 15px; transition: 0.3s; }
 .btn-create-event:hover { background: #8b3d2b; }
 
@@ -654,6 +619,3 @@ a {
     background-color: #ddd;
     border-radius: 10px;
 }
-=======
-.btn-create-event { width: 100%; background: #A64B35; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 15px; }
->>>>>>> dae1e28b82f50cb6a29be9f90de1e7a0baa5406c

@@ -39,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // ---------- ROUTING AND VIEWS DISPLAY ----------
 switch($page) {
-<<<<<<< HEAD
     case "login": $view = new ViewLogin($errorMessageLogin); echo $view; break;
     case "signup": $view = new ViewSignUp($errorMessageSignup); echo $view; break;
     case "legal": $view = new ViewLegal(); echo $view; break;
@@ -55,12 +54,10 @@ switch($page) {
         echo $view;
         break;
 
-    // NOUVELLE ROUTE : EXPLORATEUR (Fil d'actualité)
     case "explorer":
         if (!isset($_SESSION['id_user'])) { header("Location: index.php?page=login"); exit(); }
         $db = new Database();
         
-        // Si l'utilisateur poste un nouveau message
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'new_post') {
             $content = $_POST['content'] ?? '';
             $fileInfo = (isset($_FILES['post_image']) && $_FILES['post_image']['error'] === UPLOAD_ERR_OK) ? $_FILES['post_image'] : null;
@@ -73,24 +70,48 @@ switch($page) {
 
         $userData = $db->getUser($_SESSION['id_user']);
         $recommendations = $db->getRecommendations($_SESSION['id_user']);
-        $posts = $db->getFeedPosts('all'); // Récupère tous les posts de la BDD
+        $posts = $db->getFeedPosts('all'); 
         $view = new ViewExplorer($userData, $recommendations, $posts);
         echo $view;
         break;
 
+    // --- MISE À JOUR : Gestion du Profil Public et Privé ---
     case "profile":
         if (!isset($_SESSION['id_user'])) { header("Location: index.php?page=login"); exit(); }
         $db = new Database();
+        $myId = $_SESSION['id_user'];
+        
+        // 1. Si on demande à voir le profil de QUELQU'UN D'AUTRE
+        if (isset($_GET['id']) && $_GET['id'] != $myId) {
+            $targetId = intval($_GET['id']);
+            $targetUser = $db->getUser($targetId);
+            
+            // Sécurité : l'utilisateur n'existe pas
+            if (!$targetUser) { 
+                header("Location: index.php?page=dashboard"); 
+                exit(); 
+            }
+            
+            $currentUser = $db->getUser($myId);
+            $connectionStatus = $db->getConnectionStatus($myId, $targetId);
+            $userPosts = $db->getUserPosts($targetId);
+            
+            $view = new ViewUserProfile($currentUser, $targetUser, $connectionStatus, $userPosts);
+            echo $view;
+            break;
+        }
+
+        // 2. SINON, C'est MON profil
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
-            $db->updateProfile($_SESSION['id_user'], $_POST['display_name'], $_POST['location'], $_POST['bio_free']);
+            $db->updateProfile($myId, $_POST['display_name'], $_POST['location'], $_POST['bio_free']);
             if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
-                $db->updateAvatar($_SESSION['id_user'], $_FILES['avatar']);
+                $db->updateAvatar($myId, $_FILES['avatar']);
             }
             header("Location: index.php?page=profile");
             exit();
         }
-        $userData = $db->getUser($_SESSION['id_user']);
-        $recommendations = $db->getRecommendations($_SESSION['id_user']);
+        $userData = $db->getUser($myId);
+        $recommendations = $db->getRecommendations($myId);
         $view = new ViewProfile($userData, $recommendations);
         echo $view;
         break;
@@ -105,7 +126,9 @@ switch($page) {
 
     case "messages":
         if (!isset($_SESSION['id_user'])) { header("Location: index.php?page=login"); exit(); }
-        $view = new ViewMessages();
+        $db = new Database();
+        $userData = $db->getUser($_SESSION['id_user']);
+        $view = new ViewMessages($userData);
         echo $view;
         break;
 
@@ -164,6 +187,25 @@ switch($page) {
         exit();
         break;
 
+    case "api_get_comments":
+        ob_clean(); header('Content-Type: application/json');
+        if(isset($_GET['id_post'])) {
+            $db = new Database();
+            echo json_encode($db->getComments($_GET['id_post']));
+        } else { echo json_encode([]); }
+        exit();
+        break;
+
+    case "api_add_comment":
+        ob_clean(); header('Content-Type: application/json');
+        if(isset($_SESSION['id_user']) && isset($_POST['id_post']) && isset($_POST['content'])) {
+            $db = new Database();
+            $success = $db->addComment($_POST['id_post'], $_SESSION['id_user'], $_POST['content']);
+            echo json_encode(['success' => $success]);
+        } else { echo json_encode(['success' => false]); }
+        exit();
+        break;
+
     case "api_message":
         ob_clean(); header('Content-Type: application/json');
         if(isset($_SESSION['id_user']) && isset($_POST['id_receiver'])) {
@@ -200,54 +242,38 @@ switch($page) {
         exit();
         break;
 
-    default:
-=======
-    case "login":
-        // Instantiate the login view and pass any error message
-        $view = new ViewLogin($errorMessageLogin);
-        echo $view;
+    case "api_create_event":
+        ob_clean(); header('Content-Type: application/json');
+        if(isset($_SESSION['id_user']) && isset($_POST['title']) && isset($_POST['event_date'])) {
+            $db = new Database();
+            $fileInfo = (isset($_FILES['cover_image']) && $_FILES['cover_image']['error'] === UPLOAD_ERR_OK) ? $_FILES['cover_image'] : null;
+            
+            $success = $db->createEvent(
+                $_SESSION['id_user'],
+                $_POST['title'],
+                $_POST['event_date'],
+                $_POST['start_time'] ?? null,
+                $_POST['end_time'] ?? null,
+                $_POST['description'] ?? '',
+                $_POST['visibility'] ?? 'shared',
+                $_POST['meeting_url'] ?? null,
+                $fileInfo
+            );
+            echo json_encode(['success' => $success]);
+        } else { echo json_encode(['success' => false]); }
+        exit();
         break;
 
-    case "signup":
-        // Instantiate the signup view and pass any error message
-        $view = new ViewSignUp($errorMessageSignup);
-        echo $view;
-        break;
-
-    // --- KAINA'S LEGAL PAGES ---
-    case "legal":
-        $view = new ViewLegal();
-        echo $view;
-        break;
-
-    case "privacy":
-        $view = new ViewPrivacy();
-        echo $view;
-        break;
-
-    case "gcu":
-        $view = new ViewCGU();
-        echo $view;
-        break;
-
-    // --- PRIVATE AREA ---
-    case "dashboard":
-        // SECURITY CHECK: Block access if the user is not logged in
-        if (!isset($_SESSION['id_user'])) {
-            header("Location: index.php?page=login");
-            exit();
-        }
-        // Temporary display for the dashboard
-        echo "<div style='text-align:center; padding:50px;'>";
-        echo "<h1>Espace Membre Tradishion</h1>";
-        echo "<p>Tu es bien connecté !</p>";
-        echo "<a href='logout.php' style='color: red; font-weight: bold;'>Se déconnecter</a>";
-        echo "</div>";
+    case "api_events":
+        ob_clean(); header('Content-Type: application/json');
+        if(isset($_SESSION['id_user'])) {
+            $db = new Database();
+            echo json_encode($db->getEventsForUser($_SESSION['id_user']));
+        } else { echo json_encode([]); }
+        exit();
         break;
 
     default:
-        // Default route: display the public landing page
->>>>>>> dae1e28b82f50cb6a29be9f90de1e7a0baa5406c
         $view = new ViewLandingPage();
         echo $view;
         break;
