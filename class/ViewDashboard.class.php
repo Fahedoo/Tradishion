@@ -4,7 +4,7 @@ class ViewDashboard extends ViewPrivate {
     private $recommendations;
 
     public function __construct($userData, $recos) {
-        parent::__construct($userData); // Envoie les données au Header parent !
+        parent::__construct($userData);
         $this->pageTitle = "Dashboard - TradiShion";
         $this->recommendations = $recos;
     }
@@ -13,7 +13,6 @@ class ViewDashboard extends ViewPrivate {
         ob_start();
         ?>
         <div class="dash-container">
-            
             <aside class="dash-left">
                 <div class="card profile-overview" style="text-align: center;">
                     <a href="index.php?page=profile" style="text-decoration:none; color:inherit;">
@@ -104,23 +103,21 @@ class ViewDashboard extends ViewPrivate {
         <div id="create-event-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center; overflow-y:auto; padding: 20px 0;">
             <div class="card" style="width:100%; max-width:600px; padding:40px; background:white; border-radius:12px; margin: auto;">
                 <h2 style="margin-bottom:5px; color:#333; font-family:'Libre Baskerville', serif;">Créer un événement</h2>
-                <p style="color:#888; font-size:0.9rem; margin-bottom:20px;">Partagez votre savoir-faire ou organisez une rencontre avec la communauté.</p>
                 <form id="create-event-form" style="display:flex; flex-direction:column; gap:20px;">
                     <label style="border: 2px dashed #ddd; border-radius: 12px; padding: 40px 20px; text-align: center; cursor: pointer; background: #fafafa; display: block;">
                         <span style="font-size: 2rem; color: #ccc;">🖼️</span><br>
-                        <strong style="color: #555;">Ajouter une image de couverture</strong><br>
-                        <small style="color: #aaa;">JPG, PNG ou GIF. Max 5MB.</small>
+                        <strong style="color: #555;">Ajouter une image de couverture</strong>
                         <input type="file" name="cover_image" accept="image/*" style="display: none;" onchange="document.getElementById('cover-file-name').innerText = this.files[0].name;">
                         <div id="cover-file-name" style="margin-top: 10px; color: #A64B35; font-size: 0.85rem; font-weight: bold;"></div>
                     </label>
                     <div>
                         <label style="font-size:0.85rem; font-weight:bold; color:#333;">Titre de l'événement *</label>
-                        <input type="text" name="title" required placeholder="Ex: Atelier d'initiation" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; margin-top:5px; outline:none; font-size:0.95rem;">
+                        <input type="text" name="title" required style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; margin-top:5px; outline:none;">
                     </div>
                     <div style="display:flex; gap:15px;">
                         <div style="flex:1;">
                             <label style="font-size:0.85rem; font-weight:bold; color:#333;">Date *</label>
-                            <input type="date" name="event_date" required style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; margin-top:5px; outline:none; font-size:0.95rem;">
+                            <input type="date" name="event_date" required style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; margin-top:5px; outline:none;">
                         </div>
                         <div style="flex:1; display:flex; gap:10px;">
                             <div style="flex:1;">
@@ -135,24 +132,24 @@ class ViewDashboard extends ViewPrivate {
                     </div>
                     <div>
                         <label style="font-size:0.85rem; font-weight:bold; color:#333;">Lieu ou Lien visio *</label>
-                        <input type="text" name="meeting_url" required placeholder="📍 Adresse physique ou lien Zoom/Meet" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; margin-top:5px; outline:none; font-size:0.95rem;">
+                        <input type="text" name="meeting_url" required style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; margin-top:5px; outline:none;">
                     </div>
                     <div>
                         <label style="font-size:0.85rem; font-weight:bold; color:#333;">Visibilité</label>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 5px;">
                             <label class="vis-option" style="border: 1px solid #A64B35; border-radius: 8px; padding: 15px; cursor: pointer; display: flex; align-items: center; gap: 10px; background: #FFF0ED;">
                                 <input type="radio" name="visibility" value="public" checked style="accent-color: #A64B35;">
-                                <div><strong style="color: #333;">🌐 Public</strong><br><small style="color: #888;">Visible par tous</small></div>
+                                <div><strong style="color: #333;">🌐 Public</strong></div>
                             </label>
                             <label class="vis-option" style="border: 1px solid #ddd; border-radius: 8px; padding: 15px; cursor: pointer; display: flex; align-items: center; gap: 10px;">
                                 <input type="radio" name="visibility" value="private" style="accent-color: #A64B35;">
-                                <div><strong style="color: #333;">🔒 Privé</strong><br><small style="color: #888;">Sur invitation</small></div>
+                                <div><strong style="color: #333;">🔒 Privé</strong></div>
                             </label>
                         </div>
                     </div>
                     <div>
                         <label style="font-size:0.85rem; font-weight:bold; color:#333;">Description</label>
-                        <textarea name="description" rows="4" placeholder="Décrivez ce que les participants vont apprendre..." style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; margin-top:5px; resize:none; outline:none; font-family:inherit; font-size:0.95rem;"></textarea>
+                        <textarea name="description" rows="4" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; margin-top:5px; resize:none; outline:none;"></textarea>
                     </div>
                     <div style="display:flex; justify-content:flex-end; gap:15px; margin-top:10px;">
                         <button type="button" onclick="document.getElementById('create-event-modal').style.display='none'" class="btn-outline" style="border-color:#ddd; color:#555; padding:12px 25px; border-radius:8px; font-weight:bold;">Annuler</button>
@@ -163,7 +160,6 @@ class ViewDashboard extends ViewPrivate {
         </div>
 
         <script>
-            // --- GESTION DE LA CARTE, DU FEED, DES COMMENTAIRES ET DU CALENDRIER ---
             const feedTitle = document.getElementById('feed-title');
             const postsContent = document.getElementById('posts-content');
 
@@ -182,13 +178,19 @@ class ViewDashboard extends ViewPrivate {
                                 let imageHtml = post.image_url ? `<img src="${post.image_url}" style="width:100%; height:250px; object-fit:cover; border-radius:8px; margin:15px 0;">` : '';
                                 let dateObj = new Date(post.created_at);
                                 let dateString = dateObj.toLocaleDateString('fr-FR', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute:'2-digit'});
+                                
+                                let likeIcon = post.user_liked > 0 ? '❤️' : '🤍';
+                                let likeCountText = post.likes_count > 0 ? post.likes_count : "J'aime";
 
                                 postsContent.innerHTML += `
                                     <div class="feed-post card" style="margin-bottom:15px; padding:20px; border:1px solid #eee; border-radius:12px;">
                                         <div class="post-header" style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-                                            <div class="post-avatar" style="width:40px; height:40px;">${avatarHtml}</div>
+                                            <a href="index.php?page=profile&id=${post.id_author}" style="text-decoration:none;">
+                                                <div class="post-avatar" style="width:40px; height:40px;">${avatarHtml}</div>
+                                            </a>
                                             <div class="post-meta">
-                                                <strong>${post.author}</strong> <span class="post-tag" style="color:#A64B35; font-size:0.8rem; margin-left:10px;">#${post.tag || 'Tradition'}</span><br>
+                                                <a href="index.php?page=profile&id=${post.id_author}" style="text-decoration:none; color:inherit;"><strong>${post.author}</strong></a> 
+                                                <span class="post-tag" style="color:#A64B35; font-size:0.8rem; margin-left:10px;">#${post.tag || 'Tradition'}</span><br>
                                                 <span style="color:#888; font-size:0.8rem;">📍 ${post.location || 'Inconnu'}</span>
                                             </div>
                                         </div>
@@ -196,7 +198,10 @@ class ViewDashboard extends ViewPrivate {
                                         <p style="color:#333;">${post.content}</p>
                                         ${imageHtml}
                                         <div class="post-actions" style="border-top:1px solid #eee; padding-top:15px; color:#888; font-size:0.9rem; display:flex; gap:20px;">
-                                            <span style="cursor:pointer; transition: 0.2s;" onmouseover="this.style.color='#A64B35'" onmouseout="this.style.color='#888'">❤️ J'aime</span>
+                                            <span style="cursor:pointer; display:flex; align-items:center; gap:5px;" onclick="toggleLike(${post.id_post}, this)">
+                                                <span class="like-icon">${likeIcon}</span>
+                                                <span class="like-count" style="transition:0.2s;" onmouseover="this.style.color='#A64B35'" onmouseout="this.style.color='#888'">${likeCountText}</span>
+                                            </span>
                                             <span style="cursor:pointer; transition: 0.2s;" onmouseover="this.style.color='#A64B35'" onmouseout="this.style.color='#888'" onclick="toggleComments(${post.id_post})">💬 Commenter</span>
                                         </div>
                                         <div id="comments-section-${post.id_post}" style="display:none; margin-top:15px; border-top:1px dashed #eee; padding-top:15px; background: #fafafa; padding: 15px; border-radius: 8px;">
@@ -212,6 +217,17 @@ class ViewDashboard extends ViewPrivate {
                     });
             }
 
+            function toggleLike(postId, element) {
+                const fd = new FormData(); fd.append('id_post', postId);
+                fetch('index.php?page=api_like_post', {method: 'POST', body: fd}).then(res => res.json()).then(data => {
+                    let iconSpan = element.querySelector('.like-icon');
+                    let countSpan = element.querySelector('.like-count');
+                    let currentCount = parseInt(countSpan.innerText) || 0;
+                    if(data.status === 'liked') { iconSpan.innerText = '❤️'; countSpan.innerText = currentCount + 1; } 
+                    else if(data.status === 'unliked') { iconSpan.innerText = '🤍'; let newCount = currentCount - 1; countSpan.innerText = newCount > 0 ? newCount : "J'aime"; }
+                });
+            }
+
             function toggleComments(postId) {
                 const section = document.getElementById('comments-section-' + postId);
                 if(section.style.display === 'none') { section.style.display = 'block'; loadComments(postId); } 
@@ -223,17 +239,10 @@ class ViewDashboard extends ViewPrivate {
                 list.innerHTML = '<p style="font-size:0.8rem; color:#888; text-align:center;">Chargement...</p>';
                 fetch('index.php?page=api_get_comments&id_post=' + postId).then(res => res.json()).then(data => {
                     list.innerHTML = '';
-                    if(data.length === 0) { list.innerHTML = '<p style="font-size:0.8rem; color:#888; text-align:center;">Aucun commentaire. Soyez le premier !</p>'; return; }
+                    if(data.length === 0) { list.innerHTML = '<p style="font-size:0.8rem; color:#888; text-align:center;">Aucun commentaire.</p>'; return; }
                     data.forEach(c => {
                         let av = c.avatar_url ? `<img src="${c.avatar_url}" style="width:28px; height:28px; border-radius:50%; object-fit:cover;">` : `<div style="width:28px; height:28px; border-radius:50%; background:#eee; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:bold; color:#333;">${c.author.charAt(0).toUpperCase()}</div>`;
-                        list.innerHTML += `
-                            <div style="display:flex; gap:10px; margin-bottom:12px; align-items:flex-start;">
-                                ${av}
-                                <div style="background:white; padding:8px 12px; border-radius:12px; border: 1px solid #eee; flex:1;">
-                                    <strong style="font-size:0.8rem; color:#333;">${c.author}</strong>
-                                    <p style="margin:0; font-size:0.85rem; color:#555;">${c.content}</p>
-                                </div>
-                            </div>`;
+                        list.innerHTML += `<div style="display:flex; gap:10px; margin-bottom:12px; align-items:flex-start;">${av}<div style="background:white; padding:8px 12px; border-radius:12px; border: 1px solid #eee; flex:1;"><strong style="font-size:0.8rem; color:#333;">${c.author}</strong><p style="margin:0; font-size:0.85rem; color:#555;">${c.content}</p></div></div>`;
                     });
                 });
             }
@@ -319,7 +328,14 @@ class ViewDashboard extends ViewPrivate {
             
             renderCalendar(); displayEvents(selectedDateString); fetchEvents();
 
-            // Gestion modal création événement
+            const radios = document.querySelectorAll('input[name="visibility"]');
+            radios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    document.querySelectorAll('.vis-option').forEach(el => { el.style.borderColor = '#ddd'; el.style.background = 'white'; });
+                    if(this.checked) { this.closest('.vis-option').style.borderColor = '#A64B35'; this.closest('.vis-option').style.background = '#FFF0ED'; }
+                });
+            });
+
             const btnCreateEvent = document.querySelector('.btn-create-event');
             const modalEvent = document.getElementById('create-event-modal');
             const formEvent = document.getElementById('create-event-form');

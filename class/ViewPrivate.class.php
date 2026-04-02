@@ -2,6 +2,7 @@
 
 abstract class ViewPrivate extends View {
     protected $user;
+    protected $bodyStyle = ''; // Permet d'ajouter du style au body (ex: overflow:hidden pour Messages)
 
     public function __construct($userData) {
         $this->user = $userData;
@@ -19,10 +20,12 @@ abstract class ViewPrivate extends View {
             <link rel="stylesheet" href="style/style.css">
             <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
         </head>
-        <body class="dashboard-body">
+        <body class="dashboard-body" <?php echo !empty($this->bodyStyle) ? 'style="'.htmlspecialchars($this->bodyStyle).'"' : ''; ?>>
             <header class="dash-header">
                 <div class="dash-logo">
-                    <img src="assets/images/logofinal.webp" alt="Tradishion" style="height: 35px; object-fit: contain;">
+                    <a href="index.php?page=dashboard">
+                        <img src="assets/images/logofinal.webp" alt="Tradishion" style="height: 35px; object-fit: contain;">
+                    </a>
                 </div>
                 <div class="dash-search" style="position:relative;">
                     <input type="text" id="global-search" placeholder="🔍 Rechercher des artisans...">
@@ -31,13 +34,7 @@ abstract class ViewPrivate extends View {
                 <div class="dash-user-nav">
                     <span style="color: #666;">AL | <strong style="color:#A64B35;">FR</strong> | GB</span>
                     <span class="notification-icon" style="font-size: 1.2rem; cursor: pointer;">🔔</span>
-                    <a href="index.php?page=logout" title="Se déconnecter">
-                        <?php if (!empty($this->user['avatar_url'])): ?>
-                            <img src="<?php echo htmlspecialchars($this->user['avatar_url']); ?>" alt="Avatar" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
-                        <?php else: ?>
-                            <div style="width:35px; height:35px; border-radius:50%; background:#eee; display:flex; align-items:center; justify-content:center; color:#333; font-weight:bold;"><?php echo strtoupper(substr($this->user['display_name'], 0, 1)); ?></div>
-                        <?php endif; ?>
-                    </a>
+                    <a href="index.php?page=logout" class="btn-outline" style="border-color:#ccc; color:#333; padding: 5px 15px; border-radius: 20px; font-weight:bold; font-size: 0.8rem;">Se déconnecter</a>
                 </div>
             </header>
         <?php

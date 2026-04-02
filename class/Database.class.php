@@ -40,26 +40,44 @@ class Database {
         return "Une erreur est survenue lors de l'inscription."; 
     }
 
-    public function getFeedPosts($countryCode = 'all') {
-        // AJOUT DE p.id_author POUR LES LIENS VERS LE PROFIL
-        $sql = "SELECT p.id_post, p.id_author, u.display_name as author, u.avatar_url, u.location, p.title, p.body as content, p.created_at, med.file_path as image_url 
+    // --- MISE À JOUR : Récupération des cœurs (Likes) ---
+    public function getFeedPosts($countryCode = 'all', $myId = 0) {
+        $sql = "SELECT p.id_post, p.id_author, u.display_name as author, u.avatar_url, u.location, p.title, p.body as content, p.created_at, med.file_path as image_url,
+                (SELECT COUNT(*) FROM post_likes WHERE id_post = p.id_post) as likes_count,
+                (SELECT COUNT(*) FROM post_likes WHERE id_post = p.id_post AND id_user = ?) as user_liked
                 FROM posts p 
                 JOIN users u ON p.id_author = u.id_user 
                 LEFT JOIN post_media pm ON p.id_post = pm.id_post
                 LEFT JOIN media med ON pm.id_media = med.id_media ";
         
+        $params = [$myId];
+
         if ($countryCode !== 'all' && !empty($countryCode)) {
             $sql .= " WHERE u.location = ? ";
+            $params[] = $countryCode;
         }
         $sql .= " ORDER BY p.created_at DESC LIMIT 20";
         
         $stmt = $this->pdo->prepare($sql);
-        if ($countryCode !== 'all' && !empty($countryCode)) {
-            $stmt->execute([$countryCode]);
-        } else {
-            $stmt->execute();
-        }
+        $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // --- NOUVEAU : Ajouter / Retirer un Like ---
+    public function toggleLike($id_post, $id_user) {
+        $stmt = $this->pdo->prepare("SELECT * FROM post_likes WHERE id_post = ? AND id_user = ?");
+        $stmt->execute([$id_post, $id_user]);
+        if ($stmt->fetch()) {
+            // Le like existe déjà, on l'enlève
+            $del = $this->pdo->prepare("DELETE FROM post_likes WHERE id_post = ? AND id_user = ?");
+            $del->execute([$id_post, $id_user]);
+            return ['status' => 'unliked'];
+        } else {
+            // Le like n'existe pas, on l'ajoute
+            $ins = $this->pdo->prepare("INSERT INTO post_likes (id_post, id_user) VALUES (?, ?)");
+            $ins->execute([$id_post, $id_user]);
+            return ['status' => 'liked'];
+        }
     }
 
     public function createPost($id_author, $content, $fileInfo = null) {
@@ -318,7 +336,6 @@ class Database {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // --- NOUVEAU : STATUT DES RELATIONS ---
     public function getConnectionStatus($user1, $user2) {
         $stmt = $this->pdo->prepare("SELECT status, id_follower FROM connections WHERE (id_follower = ? AND id_followed = ?) OR (id_follower = ? AND id_followed = ?)");
         $stmt->execute([$user1, $user2, $user2, $user1]);
@@ -329,9 +346,11 @@ class Database {
         return false;
     }
 
-    // --- NOUVEAU : RECUPERER LES CREATIONS D'UN UTILISATEUR ---
-    public function getUserPosts($userId) {
-        $sql = "SELECT p.id_post, p.id_author, u.display_name as author, u.avatar_url, u.location, p.title, p.body as content, p.created_at, med.file_path as image_url 
+    // --- MISE À JOUR : Récupération des cœurs (Likes) pour un profil spécifique ---
+    public function getUserPosts($userId, $myId = 0) {
+        $sql = "SELECT p.id_post, p.id_author, u.display_name as author, u.avatar_url, u.location, p.title, p.body as content, p.created_at, med.file_path as image_url,
+                (SELECT COUNT(*) FROM post_likes WHERE id_post = p.id_post) as likes_count,
+                (SELECT COUNT(*) FROM post_likes WHERE id_post = p.id_post AND id_user = ?) as user_liked
                 FROM posts p 
                 JOIN users u ON p.id_author = u.id_user 
                 LEFT JOIN post_media pm ON p.id_post = pm.id_post
@@ -339,7 +358,7 @@ class Database {
                 WHERE p.id_author = ? 
                 ORDER BY p.created_at DESC";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$userId]);
+        $stmt->execute([$myId, $userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

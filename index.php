@@ -70,38 +70,31 @@ switch($page) {
 
         $userData = $db->getUser($_SESSION['id_user']);
         $recommendations = $db->getRecommendations($_SESSION['id_user']);
-        $posts = $db->getFeedPosts('all'); 
+        $posts = $db->getFeedPosts('all', $_SESSION['id_user']); 
         $view = new ViewExplorer($userData, $recommendations, $posts);
         echo $view;
         break;
 
-    // --- MISE À JOUR : Gestion du Profil Public et Privé ---
     case "profile":
         if (!isset($_SESSION['id_user'])) { header("Location: index.php?page=login"); exit(); }
         $db = new Database();
         $myId = $_SESSION['id_user'];
         
-        // 1. Si on demande à voir le profil de QUELQU'UN D'AUTRE
         if (isset($_GET['id']) && $_GET['id'] != $myId) {
             $targetId = intval($_GET['id']);
             $targetUser = $db->getUser($targetId);
             
-            // Sécurité : l'utilisateur n'existe pas
-            if (!$targetUser) { 
-                header("Location: index.php?page=dashboard"); 
-                exit(); 
-            }
+            if (!$targetUser) { header("Location: index.php?page=dashboard"); exit(); }
             
             $currentUser = $db->getUser($myId);
             $connectionStatus = $db->getConnectionStatus($myId, $targetId);
-            $userPosts = $db->getUserPosts($targetId);
+            $userPosts = $db->getUserPosts($targetId, $myId);
             
             $view = new ViewUserProfile($currentUser, $targetUser, $connectionStatus, $userPosts);
             echo $view;
             break;
         }
 
-        // 2. SINON, C'est MON profil
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
             $db->updateProfile($myId, $_POST['display_name'], $_POST['location'], $_POST['bio_free']);
             if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
@@ -143,7 +136,17 @@ switch($page) {
         ob_clean(); header('Content-Type: application/json');
         $db = new Database();
         $country = isset($_GET['country']) ? $_GET['country'] : 'all';
-        echo json_encode($db->getFeedPosts($country));
+        echo json_encode($db->getFeedPosts($country, $_SESSION['id_user']));
+        exit();
+        break;
+
+    // NOUVELLE ROUTE : Like de post
+    case "api_like_post":
+        ob_clean(); header('Content-Type: application/json');
+        if(isset($_SESSION['id_user']) && isset($_POST['id_post'])) {
+            $db = new Database();
+            echo json_encode($db->toggleLike($_POST['id_post'], $_SESSION['id_user']));
+        } else { echo json_encode(['status' => 'error']); }
         exit();
         break;
 

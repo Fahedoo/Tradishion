@@ -5,6 +5,7 @@ class ViewMessages extends ViewPrivate {
     public function __construct($userData) {
         parent::__construct($userData);
         $this->pageTitle = "Messages - TradiShion";
+        $this->bodyStyle = "overflow:hidden;";
     }
 
     protected function getBodyContent() {
@@ -14,39 +15,50 @@ class ViewMessages extends ViewPrivate {
         ?>
         <div class="chat-container" style="display:flex; max-width:1600px; margin:20px auto; height:calc(100vh - 120px); gap:20px; padding:0 40px;">
             
-            <aside class="chat-sidebar card" style="width:350px; display:flex; flex-direction:column; padding:0; overflow:hidden;">
-                <div style="padding:20px; border-bottom:1px solid #eee;">
-                    <a href="index.php?page=dashboard" style="display:inline-block; margin-bottom:15px; color:#A64B35; font-weight:bold; text-decoration:none;">← Accueil</a>
-                    <h3 style="margin-bottom:15px;">Messages</h3>
-                    <input type="text" placeholder="🔍 Rechercher dans les messages..." style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; background:#f9f9f9;">
-                </div>
+            <div style="display:flex; flex-direction:column; gap:20px; width:350px; height:100%;">
                 
-                <div class="contact-list" style="overflow-y:auto; flex:1;">
-                    <?php if (empty($myConnections)): ?>
-                        <p style="padding:20px; text-align:center; color:#888; font-style:italic;">Vous n'avez pas encore de relations.</p>
-                    <?php else: ?>
-                        <?php foreach ($myConnections as $contact): ?>
-                            <?php $initial = strtoupper(substr($contact['display_name'], 0, 1)); ?>
-                            <div class="contact-item" data-id="<?php echo $contact['id_user']; ?>" data-name="<?php echo htmlspecialchars($contact['display_name']); ?>" style="display:flex; align-items:center; gap:15px; padding:15px 20px; border-bottom:1px solid #eee; cursor:pointer;">
-                                <div class="avatar-large" style="width:50px; height:50px; margin:0; position:relative; background:#eee; display:flex; align-items:center; justify-content:center; border-radius:50%; font-size:1.2rem; font-weight:bold; overflow:hidden;">
-                                    <?php if (!empty($contact['avatar_url'])): ?>
-                                        <img src="<?php echo htmlspecialchars($contact['avatar_url']); ?>" style="width:100%; height:100%; object-fit:cover;">
-                                    <?php else: ?>
-                                        <?php echo $initial; ?>
-                                    <?php endif; ?>
-                                    <span style="position:absolute; bottom:0; right:0; width:12px; height:12px; background:#4caf50; border:2px solid white; border-radius:50%;"></span>
-                                </div>
-                                <div style="flex:1;">
-                                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                                        <strong style="color:#333;"><?php echo htmlspecialchars($contact['display_name']); ?></strong>
-                                    </div>
-                                    <p style="margin:0; font-size:0.85rem; color:#666; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">📍 <?php echo htmlspecialchars($contact['location'] ?? 'Membre du réseau'); ?></p>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                <div class="card nav-menu" style="margin-bottom:0; flex-shrink:0;">
+                   <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li><a href="index.php?page=dashboard">🏠 Accueil</a></li>
+                        <li><a href="index.php?page=explorer">🧭 Explorateur</a></li>
+                        <li><a href="index.php?page=messages" class="active" style="background:#FFF0ED; color:#A64B35; font-weight:bold;">💬 Mes Messages</a></li>
+                        <li><a href="index.php?page=network">👥 Mon Réseau</a></li>
+                    </ul>
                 </div>
-            </aside>
+
+                <aside class="chat-sidebar card" style="flex:1; display:flex; flex-direction:column; padding:0; overflow:hidden; margin-bottom:0;">
+                    <div style="padding:20px; border-bottom:1px solid #eee;">
+                        <h3 style="margin-bottom:15px; margin-top:0; font-family:'Libre Baskerville', serif;">Messages</h3>
+                        <input type="text" placeholder="🔍 Rechercher dans les messages..." style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; background:#f9f9f9; outline:none;">
+                    </div>
+                    
+                    <div class="contact-list" style="overflow-y:auto; flex:1;">
+                        <?php if (empty($myConnections)): ?>
+                            <p style="padding:20px; text-align:center; color:#888; font-style:italic;">Vous n'avez pas encore de relations.</p>
+                        <?php else: ?>
+                            <?php foreach ($myConnections as $contact): ?>
+                                <?php $initial = strtoupper(substr($contact['display_name'], 0, 1)); ?>
+                                <div class="contact-item" data-id="<?php echo $contact['id_user']; ?>" data-name="<?php echo htmlspecialchars($contact['display_name']); ?>" style="display:flex; align-items:center; gap:15px; padding:15px 20px; border-bottom:1px solid #eee; cursor:pointer;">
+                                    <div class="avatar-large" style="width:50px; height:50px; margin:0; position:relative; background:#eee; display:flex; align-items:center; justify-content:center; border-radius:50%; font-size:1.2rem; font-weight:bold; overflow:hidden; color:#333;">
+                                        <?php if (!empty($contact['avatar_url'])): ?>
+                                            <img src="<?php echo htmlspecialchars($contact['avatar_url']); ?>" style="width:100%; height:100%; object-fit:cover;">
+                                        <?php else: ?>
+                                            <?php echo $initial; ?>
+                                        <?php endif; ?>
+                                        <span style="position:absolute; bottom:0; right:0; width:12px; height:12px; background:#4caf50; border:2px solid white; border-radius:50%;"></span>
+                                    </div>
+                                    <div style="flex:1;">
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                                            <strong style="color:#333;"><?php echo htmlspecialchars($contact['display_name']); ?></strong>
+                                        </div>
+                                        <p style="margin:0; font-size:0.85rem; color:#666; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">📍 <?php echo htmlspecialchars($contact['location'] ?? 'Membre du réseau'); ?></p>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                </aside>
+            </div>
 
             <main class="chat-window card" style="flex:1; display:flex; flex-direction:column; padding:0; overflow:hidden;">
                 <div style="padding:15px 20px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; background: #fafafa;">

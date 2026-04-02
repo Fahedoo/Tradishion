@@ -14,6 +14,7 @@ class ViewProfile extends ViewPrivate {
         $initial = strtoupper(substr($this->user['display_name'], 0, 1));
         ?>
         <div style="max-width: 1200px; margin: 30px auto; padding: 0 20px;">
+            
             <div class="card" style="padding:0; overflow:hidden; position:relative; margin-bottom:30px;">
                 <div style="height:200px; background:url('assets/images/fabric1.jpg') center/cover;"></div>
                 <div style="padding: 20px 40px 40px; display:flex; align-items:flex-end; gap:20px; margin-top:-60px;">
@@ -33,17 +34,28 @@ class ViewProfile extends ViewPrivate {
             </div>
 
             <div style="display:grid; grid-template-columns: 1fr 2fr; gap:30px;">
+                
                 <aside style="display:flex; flex-direction:column; gap:20px;">
-                    <div class="card">
+                    <div class="card nav-menu" style="margin-bottom:0;">
+                       <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li><a href="index.php?page=dashboard">🏠 Accueil</a></li>
+                            <li><a href="index.php?page=explorer">🧭 Explorateur</a></li>
+                            <li><a href="index.php?page=messages">💬 Mes Messages</a></li>
+                            <li><a href="index.php?page=network">👥 Mon Réseau</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="card" style="margin-bottom:0;">
                         <h3 style="border-bottom:2px solid #FFF0ED; padding-bottom:10px;">À propos</h3>
                         <p style="color:#555; font-size:0.95rem; white-space:pre-wrap;"><?php echo htmlspecialchars($this->user['bio_free'] ?? 'Aucune biographie pour le moment.'); ?></p>
                     </div>
-                    <div class="card recommendations">
+
+                    <div class="card recommendations" style="margin-bottom:0;">
                         <h4>RECOMMANDATIONS</h4>
                         <?php foreach ($this->recommendations as $rec): ?>
                             <?php $recInit = strtoupper(substr($rec['display_name'], 0, 1)); ?>
                             <div class="rec-user" style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
-                                <div class="rec-avatar" style="background:#eee; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; overflow:hidden;">
+                                <div class="rec-avatar" style="background:#eee; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; overflow:hidden; color:#333;">
                                     <?php if (!empty($rec['avatar_url'])): ?>
                                         <img src="<?php echo htmlspecialchars($rec['avatar_url']); ?>" style="width:100%; height:100%; object-fit:cover;">
                                     <?php else: ?>
@@ -59,6 +71,7 @@ class ViewProfile extends ViewPrivate {
                         <?php endforeach; ?>
                     </div>
                 </aside>
+
                 <main>
                     <div class="card">
                         <h3 style="border-bottom:2px solid #FFF0ED; padding-bottom:10px;">Mes Créations</h3>
