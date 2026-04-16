@@ -1,23 +1,21 @@
 <?php
 
 class ViewLogin extends View {
-    // Property to store authentication errors
     private $error_message;
 
     public function __construct($error_message = "") {
-        // Set the page title and body class for CSS targeting
-        $this->pageTitle = "Connexion - TradiShion";
-        $this->bodyClass = "login-page";
+        // Le titre de la page utilise maintenant la traduction "Se connecter"
+        $this->pageTitle = "Tradishion - " . $this->t('nav_login');
         $this->error_message = $error_message;
     }
 
     protected function getBodyContent() {
-        ob_start(); // Start output buffering
+        ob_start();
         ?>
         <div class="login-container">
             <header class="login-header">
                 <h1>TRADISHION</h1>
-                <p>Connectez-vous à votre espace privé</p>
+                <p><?php echo $this->t('login_desc'); ?></p>
             </header>
 
             <main class="login-card">
@@ -29,34 +27,38 @@ class ViewLogin extends View {
 
                 <form action="index.php?page=login" method="POST">
                     <div class="form-group">
-                        <label for="email">Adresse email</label>
+                        <label for="email"><?php echo $this->t('form_email'); ?></label>
                         <input type="email" name="email" id="email" placeholder="votre@email.com" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="password">Mot de passe</label>
+                        <label for="password"><?php echo $this->t('form_password'); ?></label>
                         <input type="password" name="password" id="password" placeholder="********" required>
                     </div>
 
-                    <button type="submit" class="btn-submit">SE CONNECTER</button>
+                    <button type="submit" class="btn-submit" style="text-transform: uppercase;">
+                        <?php echo $this->t('nav_login'); ?>
+                    </button>
                     
-                    <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+                    <a href="#" class="forgot-password"><?php echo $this->t('forgot_password'); ?></a>
                 </form>
 
                 <div class="separator"></div>
 
                 <div class="register-link">
-                    <p>Vous n'avez pas de compte ?</p>
-                    <a href="index.php?page=signup" class="btn-outline">S'INSCRIRE</a>
+                    <p><?php echo $this->t('no_account'); ?></p>
+                    <a href="index.php?page=signup" class="btn-outline" style="text-transform: uppercase;">
+                        <?php echo $this->t('nav_signup'); ?>
+                    </a>
                 </div>
             </main>
 
             <footer class="login-footer">
-                <a href="index.php">← Retour au site public</a>
+                <a href="index.php">← <?php echo $this->t('back_public'); ?></a>
             </footer>
         </div>
         <?php
-        return ob_get_clean(); // Return the buffered output
+        return ob_get_clean();
     } 
 }
 ?>
